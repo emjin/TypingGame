@@ -1,17 +1,55 @@
 package analemma.typinggame;
 
+import android.graphics.Point;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 
 public class FallingLetters extends ActionBarActivity {
 
+    private static final int LET_SIZE = 40;
+    private static final int LET_SPACING = 1; //as a fraction of letter size
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_falling_letters);
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int scrWidth = size.x;
+        int numLets = (int)(scrWidth/((1+LET_SPACING)*LET_SIZE));
+        TextView[] lets = new TextView[numLets];
+
+
+        RelativeLayout rl = new RelativeLayout(this);
+
+        //no bg for now lol, easy to add tho
+
+        int pos = 0;
+        for(int i=0;i<lets.length;i++){
+            lets[i] = new TextView(this);
+            prepLetter(lets[i], rl);
+            lets[i].animate().x(pos).y(0);
+            pos += (1+LET_SPACING)*LET_SIZE;
+        }
+
+        setContentView(rl);
+
+
+    }
+
+    private void prepLetter(TextView let, RelativeLayout rl){
+        //let = new TextView(this);
+        let.setTextSize(LET_SIZE);
+        int letterNum = (int) (26*Math.random()) + 'A';
+        let.setText((char) letterNum + "");
+        rl.addView(let);
     }
 
     @Override
