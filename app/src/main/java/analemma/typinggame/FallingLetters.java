@@ -31,12 +31,19 @@ public class FallingLetters extends ActionBarActivity {
 
         //no bg for now lol, easy to add tho
 
+        //makes letters appear
         int pos = 0;
         for(int i=0;i<lets.length;i++){
             lets[i] = new TextView(this);
             prepLetter(lets[i], rl);
-            lets[i].animate().x(pos).y(0);
+            lets[i].setX(pos);
+            lets[i].setY(0); //idk if this is necessary
             pos += (1+LET_SPACING)*LET_SIZE;
+        }
+
+        //makes letters fall
+        for(int i=0;i<lets.length;i++){
+            lets[i].animate().setStartDelay(500).y(size.y);
         }
 
         setContentView(rl);
