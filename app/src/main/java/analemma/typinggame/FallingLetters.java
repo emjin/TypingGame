@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ public class FallingLetters extends ActionBarActivity {
 
     private static final int LET_SIZE = 40;
     private static final int LET_SPACING = 1; //as a fraction of letter size
+    //private static final int
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,24 +28,32 @@ public class FallingLetters extends ActionBarActivity {
         int numLets = (int)(scrWidth/((1+LET_SPACING)*LET_SIZE));
         TextView[] lets = new TextView[numLets];
 
-
         RelativeLayout rl = new RelativeLayout(this);
-
-        //no bg for now lol, easy to add tho
+        rl.setBackgroundColor(getResources().getColor(R.color.background));//black background
+        //add our beautiful analemma
+        ImageView bg = new ImageView(this);
+        bg.setImageResource(R.drawable.analemma);
+        bg.setAdjustViewBounds(true); //this makes the object's size match the actual image's size
+        rl.addView(bg);
 
         //makes letters appear
         int pos = 0;
         for(int i=0;i<lets.length;i++){
             lets[i] = new TextView(this);
-            prepLetter(lets[i], rl);
-            lets[i].setX(pos);
-            lets[i].setY(0); //idk if this is necessary
+            TextView let = lets[i];
+            let.setTextSize(LET_SIZE);
+            int letterNum = (int) (26*Math.random()) + 'A';
+            let.setText((char) letterNum + "");
+            rl.addView(let);
+            let.setX(pos);
+            let.setY(0); //idk if this is necessary
+            let.setTextColor(getResources().getColor(R.color.letter));
             pos += (1+LET_SPACING)*LET_SIZE;
         }
 
         //makes letters fall
         for(int i=0;i<lets.length;i++){
-            lets[i].animate().setStartDelay(500).y(size.y);
+            lets[i].animate().setStartDelay((long)(1000*Math.random())).setDuration((long)(5000*Math.random())).y(size.y);
         }
 
         setContentView(rl);
@@ -51,12 +61,8 @@ public class FallingLetters extends ActionBarActivity {
 
     }
 
-    private void prepLetter(TextView let, RelativeLayout rl){
-        //let = new TextView(this);
-        let.setTextSize(LET_SIZE);
-        int letterNum = (int) (26*Math.random()) + 'A';
-        let.setText((char) letterNum + "");
-        rl.addView(let);
+    private void setLetter(TextView let, RelativeLayout rl){
+
     }
 
     @Override
