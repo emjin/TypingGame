@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -17,6 +18,9 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ImageView analemma = (ImageView)findViewById(R.id.image);
+        analemma.animate().x(0).y(0);
     }
 
     @Override
