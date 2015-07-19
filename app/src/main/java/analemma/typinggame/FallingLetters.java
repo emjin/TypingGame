@@ -1,5 +1,6 @@
 package analemma.typinggame;
 
+import android.content.Context;
 import android.graphics.Point;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
@@ -9,6 +10,7 @@ import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -34,6 +36,10 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_falling_letters);//idk i think this line is not needed but dont feel ike removing
 
+
+
+
+
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -50,6 +56,14 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         bg.setAdjustViewBounds(true); //this makes the object's size match the actual image's size
         rl.addView(bg);
 
+        //code to force keyboard - off stackoverflow, who knows
+        /*rl.setFocusable(true);
+        rl.setFocusableInTouchMode(true);
+        InputMethodManager mgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.showSoftInput(rl, InputMethodManager.SHOW_IMPLICIT);*/
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput (InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
         //makes letters appear
         int pos = 0;
@@ -71,7 +85,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
         //makes letters fall
         for(int i=0;i<lets.length;i++){
-            lets[i].animate().setStartDelay((long)(1000*Math.random())).setDuration((long)(5000*Math.random())).y(size.y);
+            lets[i].animate().setStartDelay((long)(1000*Math.random()) + 2000).setDuration((long)(5000*Math.random())).y(size.y);
         }
 
         setContentView(rl);
