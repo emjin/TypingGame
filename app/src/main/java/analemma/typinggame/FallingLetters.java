@@ -2,8 +2,7 @@ package analemma.typinggame;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.KeyboardView;
+import android.graphics.Rect;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Display;
@@ -11,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,7 +20,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private static final int LET_SPACING = 1; //as a fraction of letter size
 
     private RelativeLayout rl;
-    private int scrHeight; //bc i need it all over the place for whatever reason
+    private int visHeight; //bc i need it all over the place - height of visible area
+
 
     private int[] currLets; //letters that are currently on screen, as ints from 'A' to 'Z'
     private TextView[] lets;
@@ -44,7 +43,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         Point size = new Point();
         display.getSize(size);
         int scrWidth = size.x;
-        scrHeight = size.y;
+        visHeight = size.y;
         int numLets = (int)(scrWidth/((1+LET_SPACING)*LET_SIZE));
         lets = new TextView[numLets];
         currLets = new int[numLets];
@@ -95,7 +94,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         let.setY(0); //idk if this is necessary
         let.setTextColor(getResources().getColor(R.color.letter));
         //animate
-        lets[i].animate().setStartDelay((long)(1000*Math.random()) + 2000).setDuration((long)(8000*Math.random())).y(scrHeight);
+        lets[i].animate().setStartDelay((long)(1000*Math.random()) + 2000).setDuration((long)(8000*Math.random())).y(visHeight);
     }
 
     //gets the keyevent associated with given capital letter
@@ -117,6 +116,15 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         }
         return false; //idk what returning false will do but it seems appropriate
     }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        //this should hide the keyboard when the activity ends
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
