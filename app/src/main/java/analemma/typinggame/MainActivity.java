@@ -19,8 +19,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageView analemma = (ImageView)findViewById(R.id.image);
-        analemma.animate().x(0).y(0);
+        //ImageView analemma = (ImageView)findViewById(R.id.image);
+        //analemma.animate().x(0).y(0);
     }
 
     @Override
