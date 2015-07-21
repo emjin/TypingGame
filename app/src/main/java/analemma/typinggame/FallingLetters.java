@@ -23,6 +23,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private int visHeight; //bc i need it all over the place - height of visible area
 
     private int gameScore;
+    private int numWrong;
 
     private int[] currLets; //letters that are currently on screen, as ints from 'A' to 'Z'
     private TextView[] lets;
@@ -97,7 +98,10 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         lets[i].animate().setStartDelay((long)(1000*Math.random()) + 2000).setDuration((long)(8000*Math.random())).y(visHeight);
         //I'm assuming it breaks from this if you press the right key
         //Not sure what happens to this function since we just called another one from outside...meh
-
+        ImageView bloodView = new ImageView(this);
+        bloodView.setX(lets[i].getX());
+        bloodView.setY(lets[i].getY());
+        bloodView.setImageDrawable(getResources().getDrawable(R.drawable.blood));
     }
 
     //gets the keyevent associated with given capital letter
