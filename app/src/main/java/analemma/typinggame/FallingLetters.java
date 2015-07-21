@@ -1,14 +1,13 @@
 package analemma.typinggame;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -17,7 +16,7 @@ import android.widget.TextView;
 public class FallingLetters extends ActionBarActivity implements KeyEvent.Callback {
 
     private static final int LET_SIZE = 40;
-    private static final int LET_SPACING = 1; //as a fraction of letter size
+    private static final int LET_SPACING = 2; //as a fraction of letter size
 
     private static final int MIN_SPEED = 2;
     private static final int SPEED_RANGE = 3;
@@ -97,9 +96,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     }
 
     //implementation of KeyEvent.Callback method
-    //I personally prefer onKeyDown, though I guess it doesn't really matter
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event){
+    public boolean onKeyUp(int keyCode, KeyEvent event){
         for(int i=0;i<currLets.length;i++){
             if(keyCode == getKeyEvent(currLets[i])){
                 gameScore++;
@@ -108,7 +106,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
                 return true;
             }
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -134,4 +132,32 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
         return super.onOptionsItemSelected(item);
     }
+
+    //inner class so we can tell when the animation ends
+    public class Listener implements Animator.AnimatorListener {
+        private int let; //id for the letter this is listening to
+
+        public Listener(int l){
+            let = l;
+        }
+
+        @Override
+        public void	onAnimationCancel(Animator anim){
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator anim){
+        }
+
+        @Override
+        public void onAnimationEnd(Animator anim){
+            currLets[let] = -1; //letter no longer on screen, can't type it
+        }
+
+        @Override
+        public void onAnimationStart(Animator anim){
+        }
+    }
+
+
 }
