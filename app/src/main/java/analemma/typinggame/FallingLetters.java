@@ -22,6 +22,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private RelativeLayout rl;
     private int visHeight; //bc i need it all over the place - height of visible area
 
+    private int gameScore;
 
     private int[] currLets; //letters that are currently on screen, as ints from 'A' to 'Z'
     private TextView[] lets;
@@ -38,6 +39,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_falling_letters);//idk i think this line is not needed but dont feel ike removing
+        gameScore = 0;
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -74,8 +76,6 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         }
 
         setContentView(rl);
-
-
     }
 
     //chooses and animates a letter for a given textview in lets
@@ -95,6 +95,9 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         let.setTextColor(getResources().getColor(R.color.letter));
         //animate
         lets[i].animate().setStartDelay((long)(1000*Math.random()) + 2000).setDuration((long)(8000*Math.random())).y(visHeight);
+        //I'm assuming it breaks from this if you press the right key
+        //Not sure what happens to this function since we just called another one from outside...meh
+
     }
 
     //gets the keyevent associated with given capital letter
@@ -103,18 +106,20 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     }
 
     //implementation of KeyEvent.Callback method
+    //I personally prefer onKeyDown, though I guess it doesn't really matter
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event){
+    public boolean onKeyDown(int keyCode, KeyEvent event){
         for(int i=0;i<currLets.length;i++){
-
             if(keyCode == getKeyEvent(currLets[i])){
+                gameScore++;
                 lets[i].setText("");//for now, the text should just disappear
+                TextView scoreText = (TextView)findViewById(R.id.score);
+                scoreText.setText("Score: " + gameScore + " ");
                 createLetter(i);
                 return true;
             }
-
         }
-        return false; //idk what returning false will do but it seems appropriate
+        return false;
     }
 
     @Override
