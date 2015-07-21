@@ -1,14 +1,14 @@
 package analemma.typinggame;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
+import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -95,6 +95,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         let.setTextColor(getResources().getColor(R.color.letter));
         //animate
         lets[i].animate().setStartDelay((long)(1000*Math.random()) + 2000).setDuration((long)(8000*Math.random())).y(visHeight);
+        lets[i].animate().setListener(new Listener(i)); //listens for the end of the animations
     }
 
     //gets the keyevent associated with given capital letter
@@ -106,13 +107,13 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event){
         for(int i=0;i<currLets.length;i++){
-
-            if(keyCode == getKeyEvent(currLets[i])){
-                lets[i].setText("");//for now, the text should just disappear
-                createLetter(i);
-                return true;
+            if(currLets[i] != -1) { //don't call on a dead letter
+                if (keyCode == getKeyEvent(currLets[i])) {
+                    lets[i].setText("");//for now, the text should just disappear
+                    createLetter(i);
+                    return true;
+                }
             }
-
         }
         return false; //idk what returning false will do but it seems appropriate
     }
@@ -140,4 +141,32 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
         return super.onOptionsItemSelected(item);
     }
+
+    //inner class so we can tell when the animation ends
+    public class Listener implements Animator.AnimatorListener {
+        private int let; //id for the letter this is listening to
+
+        public Listener(int l){
+            let = l;
+        }
+
+        @Override
+        public void	onAnimationCancel(Animator anim){
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator anim){
+        }
+
+        @Override
+        public void onAnimationEnd(Animator anim){
+            currLets[let] = -1; //letter no longer on screen, can't type it
+        }
+
+        @Override
+        public void onAnimationStart(Animator anim){
+        }
+    }
+
+
 }
