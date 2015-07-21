@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id = "@+id/fallingLetterLayout"
     android:background="#000000"
     tools:context="analemma.typinggame.FallingLetters">
 
@@ -18,22 +19,5 @@
         android:gravity="end"
         android:textColor="#DDDD22"
         />
-
-    <TextView android:id="@+id/let1"
-        android:layout_width="@dimen/falling_let_size"
-        android:layout_height="@dimen/falling_let_size"
-        android:textColor="#ffffff"
-        />
-    <TextView android:id="@+id/let2"
-        android:layout_width="@dimen/falling_let_size"
-        android:layout_height="@dimen/falling_let_size"
-        android:textColor="#ffffff"
-        />
-    <TextView android:id="@+id/let3"
-        android:layout_width="@dimen/falling_let_size"
-        android:layout_height="@dimen/falling_let_size"
-        android:textColor="#ffffff"
-        />
-
 
 </RelativeLayout>

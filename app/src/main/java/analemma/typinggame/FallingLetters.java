@@ -19,15 +19,18 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private static final int LET_SIZE = 40;
     private static final int LET_SPACING = 1; //as a fraction of letter size
 
+    private static final int MIN_SPEED = 2;
+    private static final int SPEED_RANGE = 3;
+
     private RelativeLayout rl;
     private int visHeight; //bc i need it all over the place - height of visible area
+    private int scrWidth;
 
     private int gameScore;
-    private int numWrong;
+    private int numDeaths;
 
     private int[] currLets; //letters that are currently on screen, as ints from 'A' to 'Z'
-    private TextView[] lets;
-    private int[] positions; //positions for each letter. is this the smart way? nah. is it easy tho? yeaaaah.
+    private LetterView[] lets;
     private int[] keyEvents = {KeyEvent.KEYCODE_A, KeyEvent.KEYCODE_B, KeyEvent.KEYCODE_C, KeyEvent.KEYCODE_D,
             KeyEvent.KEYCODE_E, KeyEvent.KEYCODE_F, KeyEvent.KEYCODE_G, KeyEvent.KEYCODE_H, KeyEvent.KEYCODE_I,
             KeyEvent.KEYCODE_J, KeyEvent.KEYCODE_K, KeyEvent.KEYCODE_L, KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_N,
@@ -39,69 +42,53 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_falling_letters);//idk i think this line is not needed but dont feel ike removing
-        gameScore = 0;
+        setContentView(R.layout.activity_falling_letters);
 
+        //Get screen size
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int scrWidth = size.x;
+        scrWidth = size.x;
         visHeight = size.y;
-        int numLets = (int)(scrWidth/((1+LET_SPACING)*LET_SIZE));
-        lets = new TextView[numLets];
-        currLets = new int[numLets];
-        positions = new int[numLets];
-
-        rl = new RelativeLayout(this);
-        rl.setBackgroundColor(getResources().getColor(R.color.background));//black background
-        //add our beautiful analemma
-        ImageView bg = new ImageView(this);
-        bg.setImageResource(R.drawable.analemma);
-        bg.setAdjustViewBounds(true); //this makes the object's size match the actual image's size
-        rl.addView(bg);
 
         //force keyboard to show. thanks stackoverflow
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
-        //inits the appropriate positions for each letter
-        int pos = 0;
-        for(int i=0;i<lets.length;i++){
-            positions[i] = pos;
-            pos += (1+LET_SPACING)*LET_SIZE;
-        }
-
-        //go letters go
-        for(int i=0;i<lets.length;i++){
-            createLetter(i);
-        }
-
-        setContentView(rl);
+        startGame();
     }
 
-    //chooses and animates a letter for a given textview in lets
-    private void createLetter(int i){
-        //init
-        lets[i] = new TextView(this);
-        TextView let = lets[i];
-        let.setTextSize(LET_SIZE);
-        //choose a letter
-        int letterNum = (int) (26*Math.random()) + 'A';
-        let.setText((char) letterNum + "");
-        currLets[i] = letterNum;
-        //add to layout in proper location
-        rl.addView(let);
-        let.setX(positions[i]);
-        let.setY(0); //idk if this is necessary
-        let.setTextColor(getResources().getColor(R.color.letter));
-        //animate
-        lets[i].animate().setStartDelay((long)(1000*Math.random()) + 2000).setDuration((long)(8000*Math.random())).y(visHeight);
-        //I'm assuming it breaks from this if you press the right key
-        //Not sure what happens to this function since we just called another one from outside...meh
-        ImageView bloodView = new ImageView(this);
-        bloodView.setX(lets[i].getX());
-        bloodView.setY(lets[i].getY());
-        bloodView.setImageDrawable(getResources().getDrawable(R.drawable.blood));
+    private void startGame() {
+        //Initialize game stuff
+        gameScore = 0;
+        numDeaths = 0;
+
+        //Initialize letters
+        int numLets = (int)(scrWidth/((1+LET_SPACING)*LET_SIZE));
+        lets = new LetterView[numLets];
+        for(int i = 0; i < numLets; i++) {
+            String letter = " "  +((int)(Math.random()*keyEvents.length) + 'A');
+            float dy = (float)(Math.random()*SPEED_RANGE)+MIN_SPEED;
+            lets[i] = new LetterView(this, visHeight, dy, letter);
+
+            lets[i].setLetterX((float)(Math.random()*(scrWidth-lets[i].getX())));
+            lets[i].setLetterY((float)(-Math.random()*visHeight)); //this will cause the delays
+            lets[i].letter.setTextSize(LET_SIZE);
+            lets[i].letter.setTextColor(getResources().getColor(R.color.letter));
+        }
+
+        while(numDeaths < 3) {
+            for(int i = 0; i < numLets; i++) {
+                if(!lets[i].isAlive()) {
+                    lets[i].setLetterX((float)(Math.random()*(scrWidth-lets[i].getX())));
+                    lets[i].setLetterY((float)(-Math.random()*visHeight)); //this will cause the delays
+                    String letter = " "  +((int)(Math.random()*keyEvents.length) + 'A');
+                    float dy = (float)(Math.random()*SPEED_RANGE)+MIN_SPEED;
+                    lets[i].setLetter(letter);
+                    lets[i].setDy(dy);
+                }
+            }
+        }
     }
 
     //gets the keyevent associated with given capital letter
@@ -116,10 +103,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         for(int i=0;i<currLets.length;i++){
             if(keyCode == getKeyEvent(currLets[i])){
                 gameScore++;
-                lets[i].setText("");//for now, the text should just disappear
-                TextView scoreText = (TextView)findViewById(R.id.score);
+                TextView scoreText = (TextView) findViewById(R.id.score);
                 scoreText.setText("Score: " + gameScore + " ");
-                createLetter(i);
                 return true;
             }
         }
