@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -17,11 +16,10 @@ import android.widget.TextView;
 public class FallingLetters extends ActionBarActivity implements KeyEvent.Callback {
 
     private static final int LET_SIZE = 40;
-    private static final int LET_SPACING = 1; //as a fraction of letter size
+    private static final int LET_SPACING = 2; //as a fraction of letter size
 
     private RelativeLayout rl;
     private int visHeight; //bc i need it all over the place - height of visible area
-
 
     private int[] currLets; //letters that are currently on screen, as ints from 'A' to 'Z'
     private TextView[] lets;
@@ -44,10 +42,11 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         display.getSize(size);
         int scrWidth = size.x;
         visHeight = size.y;
-        int numLets = (int)(scrWidth/((1+LET_SPACING)*LET_SIZE));
+        int numLets = (scrWidth/((1+LET_SPACING)*LET_SIZE));
         lets = new TextView[numLets];
         currLets = new int[numLets];
         positions = new int[numLets];
+
 
         rl = new RelativeLayout(this);
         rl.setBackgroundColor(getResources().getColor(R.color.background));//black background
@@ -75,27 +74,30 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
         setContentView(rl);
 
-
     }
 
     //chooses and animates a letter for a given textview in lets
+    //return value is the letterNum value to be stored in currLets
     private void createLetter(int i){
         //init
         lets[i] = new TextView(this);
         TextView let = lets[i];
         let.setTextSize(LET_SIZE);
+
         //choose a letter
         int letterNum = (int) (26*Math.random()) + 'A';
         let.setText((char) letterNum + "");
         currLets[i] = letterNum;
+
         //add to layout in proper location
         rl.addView(let);
         let.setX(positions[i]);
         let.setY(0); //idk if this is necessary
         let.setTextColor(getResources().getColor(R.color.letter));
+
         //animate
-        lets[i].animate().setStartDelay((long)(1000*Math.random()) + 2000).setDuration((long)(8000*Math.random())).y(visHeight);
-        lets[i].animate().setListener(new Listener(i)); //listens for the end of the animations
+        lets[i].animate().setStartDelay((long)(1000*Math.random()) + 2000).setDuration((long) (8000 * Math.random())).y(visHeight);
+        lets[i].animate().setListener(new Listener(i)); //listens for the end of the animation
     }
 
     //gets the keyevent associated with given capital letter
@@ -109,13 +111,14 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         for(int i=0;i<currLets.length;i++){
             if(currLets[i] != -1) { //don't call on a dead letter
                 if (keyCode == getKeyEvent(currLets[i])) {
-                    lets[i].setText("");//for now, the text should just disappear
-                    createLetter(i);
+                    lets[i].setText("");
+                    lets[i].animate().cancel();
+                    createLetter(i);//put the next letter in motion and store the correct currLets value
                     return true;
                 }
             }
         }
-        return false; //idk what returning false will do but it seems appropriate
+        return true;
     }
 
     @Override
