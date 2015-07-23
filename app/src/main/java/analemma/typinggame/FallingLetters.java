@@ -70,8 +70,9 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             float dy = (float)(Math.random()*SPEED_RANGE)+MIN_SPEED;
             lets[i] = new LetterView(this, visHeight, dy, letter);
 
-            lets[i].setLetterX((float)(Math.random()*(scrWidth-lets[i].getX())));
-            lets[i].setLetterY((float)(-Math.random()*visHeight)); //this will cause the delays
+            lets[i].setLetterX((float) (Math.random() * (scrWidth - lets[i].getX())));
+            //lets[i].setLetterY((float)(-Math.random()*visHeight)); //this will cause the delays
+            lets[i].setLetterY(20);
             lets[i].letter.setTextSize(LET_SIZE);
             lets[i].letter.setTextColor(getResources().getColor(R.color.letter));
         }

@@ -2,6 +2,7 @@ package analemma.typinggame;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
@@ -16,6 +17,8 @@ import android.widget.TextView;
  * TODO: document your custom view class.
  */
 public class LetterView extends View {
+
+    private static final int LET_SIZE = 40;
     private Context mContext;
     private float x;
     private float y;
@@ -74,7 +77,12 @@ public class LetterView extends View {
             alive = false;
         }
         h.postDelayed(r, FRAME_RATE);
+        Paint p = new Paint();
+        p.setColor(getResources().getColor(R.color.letter));
+        p.setTextSize(LET_SIZE);
+        canvas.drawText(letter.getText().toString(), x, y, p);
     }
+
 
     public void setDx(float ndx) { dx = ndx; }
     public float getDx() { return dx; }
