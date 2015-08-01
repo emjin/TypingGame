@@ -24,15 +24,10 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private static final int LET_SPACING = 1; //as a fraction of letter size
 
     private RelativeLayout rl;
-    private int visHeight; //bc i need it all over the place - height of visible area
+    private int visHeight; //height of visible area
 
     private int gameScore;
     private int numWrong;
-   // private boolean[] firstRound;
-
-   // private int[] currLets; //letters that are currently on screen, as ints from 'A' to 'Z'
-   // private TextView[] lets;
-  //  private int[] positions; //positions for each letter. is this the smart way? nah. is it easy tho? yeaaaah.
 
     private Letter[] letters;
     private int[] keyEvents = {KeyEvent.KEYCODE_A, KeyEvent.KEYCODE_B, KeyEvent.KEYCODE_C, KeyEvent.KEYCODE_D,
@@ -46,7 +41,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_falling_letters);//idk i think this line is not needed but dont feel ike removing
+        setContentView(R.layout.activity_falling_letters);
         gameScore = 0;
 
         Display display = getWindowManager().getDefaultDisplay();
@@ -54,8 +49,6 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         display.getSize(size);
         int scrWidth = size.x;
         visHeight = size.y;
-
-
 
 
         final Window mRootWindow = getWindow();
@@ -66,51 +59,31 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
                         Rect r = new Rect();
                         View view = mRootWindow.getDecorView();
                         view.getWindowVisibleDisplayFrame(r);
-                        visHeight = r.height(); //TODO ???????????? :-/ :^3
-                        // r.left, r.top, r.right, r.bottom
+                        visHeight = r.height(); //TODO ????????????
                     }
                 });
 
-
-        int numLets = (int)(scrWidth/((1+LET_SPACING)*LET_SIZE));
-        letters = new Letter[numLets];
-        initFirst();
-
-        //rl = new RelativeLayout(this);
         rl = (RelativeLayout) findViewById(R.id.activity_falling_letters);
         rl.setBackgroundColor(getResources().getColor(R.color.background));//black background
-        //add our beautiful analemma
-        //ImageView bg = new ImageView(this);
-        //bg.setImageResource(R.drawable.analemma);
-        //bg.setAdjustViewBounds(true); //this makes the object's size match the actual image's size
-        //rl.addView(bg);
 
         //force keyboard to show. thanks stackoverflow
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
-        //inits the letter and their appropriate positions
-        int pos = 0;
+        //inits the letters and their positions
+        int numLets = (int)(scrWidth/((1+LET_SPACING)*LET_SIZE));
+        letters = new Letter[numLets];
+        //int pos = 0;
         for(int i=0;i<letters.length;i++){
-            letters[i] = new Letter(this); //filler non-letter for now
-            letters[i].setPos(pos);
-            pos += (1+LET_SPACING)*LET_SIZE;
-        }
-
-        //go letters go
-        for(int i=0;i<letters.length;i++){
+            letters[i] = new Letter(this); //init
             createLetter(i);
         }
-
-       // setContentView(rl);
-    }
-
-    private void initFirst(){
-        //set everything to true
     }
 
     //chooses and animates a letter for a given textview in lets
     private void createLetter(int i){
+        letters[i].setPos(i * (1+LET_SPACING)*LET_SIZE); // set position
+
         //choose a letter
         int letterNum = (int) (26*Math.random()) + 'A';
         letters[i].setLet(letterNum);
@@ -140,14 +113,13 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     }
 
     //implementation of KeyEvent.Callback method
-    //I personally prefer onKeyDown, though I guess it doesn't really matter
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
         for(int i=0;i<letters.length;i++){
             if(letters[i].getLet() != -1) {
                 if (keyCode == getKeyEvent(letters[i].getLet())) {
                     gameScore++;
-                    letters[i].getTextView().setText("");//for now, the text should just disappear
+                    letters[i].getTextView().setText("");
                     letters[i].getTextView().animate().cancel();
                     TextView scoreText = (TextView) findViewById(R.id.score);
                     scoreText.setText("Score: " + gameScore + " ");
@@ -184,40 +156,39 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     }
 
     //inner class so we can tell when the animation ends
-        public class Listener implements Animator.AnimatorListener {
-                private int let; //id for the letter this is listening to
+    public class Listener implements Animator.AnimatorListener {
+        private int let; //id for the letter this is listening to
 
-                public Listener(int l){
+        public Listener(int l){
                      let = l;
                 }
 
-                @Override
-                public void	onAnimationCancel(Animator anim){
+        @Override
+        public void	onAnimationCancel(Animator anim){
 
-                        }
+        }
 
-                @Override
-                public void onAnimationRepeat(Animator anim){
-                    }
+        @Override
+        public void onAnimationRepeat(Animator anim){
+        }
 
-                @Override
-                public void onAnimationEnd(Animator anim){
-                        letters[let].setLet(-1); //letter no longer on screen, can't type it
-                        ImageView bloodView = new ImageView(rl.getContext());
-                        bloodView.setX(letters[let].getTextView().getX()-(float)(LET_SIZE*2.5));
-                        bloodView.setY(letters[let].getTextView().getY()-(float)(LET_SIZE*2.5));
+        @Override
+        public void onAnimationEnd(Animator anim){
+            letters[let].setLet(-1); //letter no longer on screen, can't type it
+            ImageView bloodView = new ImageView(rl.getContext());
+            bloodView.setX(letters[let].getTextView().getX()-(float)(LET_SIZE*2.5));
+            bloodView.setY(letters[let].getTextView().getY()-(float)(LET_SIZE*2.5));
 
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LET_SIZE*5, LET_SIZE*5);//use real vals l8r
-                    bloodView.setLayoutParams(layoutParams);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LET_SIZE*5, LET_SIZE*5);//use real vals l8r
+            bloodView.setLayoutParams(layoutParams);
 
-                    bloodView.setImageDrawable(getResources().getDrawable(R.drawable.bloodsplatter));
-                        rl.addView(bloodView);
-
-                    }
-
-                @Override
-                public void onAnimationStart(Animator anim){
-                    }
+            bloodView.setImageDrawable(getResources().getDrawable(R.drawable.bloodsplatter));
+            rl.addView(bloodView);
             }
 
+        @Override
+        public void onAnimationStart(Animator anim){
+        }
+
+    }
 }
