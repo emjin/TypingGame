@@ -28,11 +28,13 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
     private int gameScore;
     private int numWrong;
-    private boolean[] firstRound;
+   // private boolean[] firstRound;
 
-    private int[] currLets; //letters that are currently on screen, as ints from 'A' to 'Z'
-    private TextView[] lets;
-    private int[] positions; //positions for each letter. is this the smart way? nah. is it easy tho? yeaaaah.
+   // private int[] currLets; //letters that are currently on screen, as ints from 'A' to 'Z'
+   // private TextView[] lets;
+  //  private int[] positions; //positions for each letter. is this the smart way? nah. is it easy tho? yeaaaah.
+
+    private Letter[] letters;
     private int[] keyEvents = {KeyEvent.KEYCODE_A, KeyEvent.KEYCODE_B, KeyEvent.KEYCODE_C, KeyEvent.KEYCODE_D,
             KeyEvent.KEYCODE_E, KeyEvent.KEYCODE_F, KeyEvent.KEYCODE_G, KeyEvent.KEYCODE_H, KeyEvent.KEYCODE_I,
             KeyEvent.KEYCODE_J, KeyEvent.KEYCODE_K, KeyEvent.KEYCODE_L, KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_N,
@@ -71,10 +73,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
 
         int numLets = (int)(scrWidth/((1+LET_SPACING)*LET_SIZE));
-        lets = new TextView[numLets];
-        currLets = new int[numLets];
-        positions = new int[numLets];
-        firstRound = new boolean[numLets];
+        letters = new Letter[numLets];
         initFirst();
 
         //rl = new RelativeLayout(this);
@@ -90,15 +89,16 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
-        //inits the appropriate positions for each letter
+        //inits the letter and their appropriate positions
         int pos = 0;
-        for(int i=0;i<lets.length;i++){
-            positions[i] = pos;
+        for(int i=0;i<letters.length;i++){
+            letters[i] = new Letter(this); //filler non-letter for now
+            letters[i].setPos(pos);
             pos += (1+LET_SPACING)*LET_SIZE;
         }
 
         //go letters go
-        for(int i=0;i<lets.length;i++){
+        for(int i=0;i<letters.length;i++){
             createLetter(i);
         }
 
@@ -111,26 +111,25 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
     //chooses and animates a letter for a given textview in lets
     private void createLetter(int i){
-        //init
-        lets[i] = new TextView(this);
-        TextView let = lets[i];
-        let.setTextSize(LET_SIZE);
         //choose a letter
         int letterNum = (int) (26*Math.random()) + 'A';
-        let.setText((char) letterNum + "");
-        currLets[i] = letterNum;
+        letters[i].setLet(letterNum);
+
         //add to layout in proper location
-        rl.addView(let);
-        let.setX(positions[i]);
-        let.setY(-LET_SIZE); //idk if this is necessary
-        let.setTextColor(getResources().getColor(R.color.letter));
+        TextView letterView = letters[i].getTextView();
+
+        letterView.setX(letters[i].getPos());
+        letterView.setY(-LET_SIZE);
+        letterView.setTextColor(getResources().getColor(R.color.letter));
+        letterView.setTextSize(LET_SIZE);
         //animate
-        if(firstRound){ //use array instead
-            lets[i].animate().setStartDelay((long)(2000*Math.random()) + 2000);
-            firstRound = false;
+        if(letters[i].isFirstRound()){
+            rl.addView(letterView); //we only need to add it to the view the first time
+            letterView.animate().setStartDelay((long)(2000*Math.random()) + 2000);
+            letters[i].setFirstRound(false);
         }
-        lets[i].animate().setDuration((long)(8000*Math.random())).y(visHeight);
-        lets[i].animate().setListener(new Listener(i)); //listens for the end of the animations
+        letterView.animate().setDuration((long)(8000*Math.random())).y(visHeight);
+        letterView.animate().setListener(new Listener(i)); //listens for the end of the animations
         //I'm assuming it breaks from this if you press the right key
         //Not sure what happens to this function since we just called another one from outside...meh
     }
@@ -144,12 +143,12 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     //I personally prefer onKeyDown, though I guess it doesn't really matter
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
-        for(int i=0;i<currLets.length;i++){
-            if(currLets[i] != -1) {
-                if (keyCode == getKeyEvent(currLets[i])) {
+        for(int i=0;i<letters.length;i++){
+            if(letters[i].getLet() != -1) {
+                if (keyCode == getKeyEvent(letters[i].getLet())) {
                     gameScore++;
-                    lets[i].setText("");//for now, the text should just disappear
-                    lets[i].animate().cancel();
+                    letters[i].getTextView().setText("");//for now, the text should just disappear
+                    letters[i].getTextView().animate().cancel();
                     TextView scoreText = (TextView) findViewById(R.id.score);
                     scoreText.setText("Score: " + gameScore + " ");
                     createLetter(i);
@@ -203,10 +202,10 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
                 @Override
                 public void onAnimationEnd(Animator anim){
-                        currLets[let] = -1; //letter no longer on screen, can't type it
+                        letters[let].setLet(-1); //letter no longer on screen, can't type it
                         ImageView bloodView = new ImageView(rl.getContext());
-                        bloodView.setX(lets[let].getX()-(float)(LET_SIZE*2.5));
-                        bloodView.setY(lets[let].getY()-(float)(LET_SIZE*2.5));
+                        bloodView.setX(letters[let].getTextView().getX()-(float)(LET_SIZE*2.5));
+                        bloodView.setY(letters[let].getTextView().getY()-(float)(LET_SIZE*2.5));
 
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LET_SIZE*5, LET_SIZE*5);//use real vals l8r
                     bloodView.setLayoutParams(layoutParams);
