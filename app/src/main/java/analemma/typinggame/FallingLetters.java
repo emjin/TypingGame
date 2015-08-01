@@ -9,6 +9,8 @@ import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -47,18 +49,37 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         display.getSize(size);
         int scrWidth = size.x;
         visHeight = size.y;
+
+
+
+
+        final Window mRootWindow = getWindow();
+        View mRootView = mRootWindow.getDecorView().findViewById(android.R.id.content);
+        mRootView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    public void onGlobalLayout(){
+                        Rect r = new Rect();
+                        View view = mRootWindow.getDecorView();
+                        view.getWindowVisibleDisplayFrame(r);
+                        visHeight = r.height(); //TODO ???????????? :-/ :^3
+                        // r.left, r.top, r.right, r.bottom
+                    }
+                });
+
+
         int numLets = (int)(scrWidth/((1+LET_SPACING)*LET_SIZE));
         lets = new TextView[numLets];
         currLets = new int[numLets];
         positions = new int[numLets];
 
-        rl = new RelativeLayout(this);
+        //rl = new RelativeLayout(this);
+        rl = (RelativeLayout) findViewById(R.id.activity_falling_letters);
         rl.setBackgroundColor(getResources().getColor(R.color.background));//black background
         //add our beautiful analemma
-        ImageView bg = new ImageView(this);
-        bg.setImageResource(R.drawable.analemma);
-        bg.setAdjustViewBounds(true); //this makes the object's size match the actual image's size
-        rl.addView(bg);
+        //ImageView bg = new ImageView(this);
+        //bg.setImageResource(R.drawable.analemma);
+        //bg.setAdjustViewBounds(true); //this makes the object's size match the actual image's size
+        //rl.addView(bg);
 
         //force keyboard to show. thanks stackoverflow
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -76,7 +97,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             createLetter(i);
         }
 
-        setContentView(rl);
+       // setContentView(rl);
     }
 
     //chooses and animates a letter for a given textview in lets
