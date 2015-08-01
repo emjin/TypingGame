@@ -1,5 +1,6 @@
 package analemma.typinggame;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -113,10 +114,11 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         //add to layout in proper location
         rl.addView(let);
         let.setX(positions[i]);
-        let.setY(0); //idk if this is necessary
+        let.setY(-LET_SIZE); //idk if this is necessary
         let.setTextColor(getResources().getColor(R.color.letter));
         //animate
         lets[i].animate().setStartDelay((long)(1000*Math.random()) + 2000).setDuration((long)(8000*Math.random())).y(visHeight);
+        lets[i].animate().setListener(new Listener(i)); //listens for the end of the animations
         //I'm assuming it breaks from this if you press the right key
         //Not sure what happens to this function since we just called another one from outside...meh
         ImageView bloodView = new ImageView(this);
@@ -135,13 +137,16 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
         for(int i=0;i<currLets.length;i++){
-            if(keyCode == getKeyEvent(currLets[i])){
-                gameScore++;
-                lets[i].setText("");//for now, the text should just disappear
-                TextView scoreText = (TextView)findViewById(R.id.score);
-                scoreText.setText("Score: " + gameScore + " ");
-                createLetter(i);
-                return true;
+            if(currLets[i] != -1) {
+                if (keyCode == getKeyEvent(currLets[i])) {
+                    gameScore++;
+                    lets[i].setText("");//for now, the text should just disappear
+                    lets[i].animate().cancel();
+                    TextView scoreText = (TextView) findViewById(R.id.score);
+                    scoreText.setText("Score: " + gameScore + " ");
+                    createLetter(i);
+                    return true;
+                }
             }
         }
         return false;
@@ -170,4 +175,32 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
         return super.onOptionsItemSelected(item);
     }
+
+    //inner class so we can tell when the animation ends
+        public class Listener implements Animator.AnimatorListener {
+                private int let; //id for the letter this is listening to
+
+                public Listener(int l){
+                     let = l;
+                }
+
+                @Override
+                public void	onAnimationCancel(Animator anim){
+
+                        }
+
+                @Override
+                public void onAnimationRepeat(Animator anim){
+                    }
+
+                @Override
+                public void onAnimationEnd(Animator anim){
+                        currLets[let] = -1; //letter no longer on screen, can't type it
+                    }
+
+                @Override
+                public void onAnimationStart(Animator anim){
+                    }
+            }
+
 }
