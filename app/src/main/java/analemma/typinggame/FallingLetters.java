@@ -14,6 +14,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -121,10 +122,6 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         lets[i].animate().setListener(new Listener(i)); //listens for the end of the animations
         //I'm assuming it breaks from this if you press the right key
         //Not sure what happens to this function since we just called another one from outside...meh
-        ImageView bloodView = new ImageView(this);
-        bloodView.setX(lets[i].getX());
-        bloodView.setY(lets[i].getY());
-        bloodView.setImageDrawable(getResources().getDrawable(R.drawable.blood));
     }
 
     //gets the keyevent associated with given capital letter
@@ -196,6 +193,16 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
                 @Override
                 public void onAnimationEnd(Animator anim){
                         currLets[let] = -1; //letter no longer on screen, can't type it
+                        ImageView bloodView = new ImageView(rl.getContext());
+                        bloodView.setX(lets[let].getX()-(float)(LET_SIZE*2.5));
+                        bloodView.setY(lets[let].getY()-(float)(LET_SIZE*2.5));
+
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LET_SIZE*5, LET_SIZE*5);//use real vals l8r
+                    bloodView.setLayoutParams(layoutParams);
+
+                    bloodView.setImageDrawable(getResources().getDrawable(R.drawable.bloodsplatter));
+                        rl.addView(bloodView);
+
                     }
 
                 @Override
