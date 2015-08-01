@@ -28,6 +28,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
     private int gameScore;
     private int numWrong;
+    private boolean[] firstRound;
 
     private int[] currLets; //letters that are currently on screen, as ints from 'A' to 'Z'
     private TextView[] lets;
@@ -73,6 +74,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         lets = new TextView[numLets];
         currLets = new int[numLets];
         positions = new int[numLets];
+        firstRound = new boolean[numLets];
+        initFirst();
 
         //rl = new RelativeLayout(this);
         rl = (RelativeLayout) findViewById(R.id.activity_falling_letters);
@@ -102,6 +105,10 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
        // setContentView(rl);
     }
 
+    private void initFirst(){
+        //set everything to true
+    }
+
     //chooses and animates a letter for a given textview in lets
     private void createLetter(int i){
         //init
@@ -118,7 +125,11 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         let.setY(-LET_SIZE); //idk if this is necessary
         let.setTextColor(getResources().getColor(R.color.letter));
         //animate
-        lets[i].animate().setStartDelay((long)(1000*Math.random()) + 2000).setDuration((long)(8000*Math.random())).y(visHeight);
+        if(firstRound){ //use array instead
+            lets[i].animate().setStartDelay((long)(2000*Math.random()) + 2000);
+            firstRound = false;
+        }
+        lets[i].animate().setDuration((long)(8000*Math.random())).y(visHeight);
         lets[i].animate().setListener(new Listener(i)); //listens for the end of the animations
         //I'm assuming it breaks from this if you press the right key
         //Not sure what happens to this function since we just called another one from outside...meh
