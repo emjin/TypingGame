@@ -13,7 +13,7 @@ public class Letter {
     private TextView txt;
     private int pos; //x position
 
-    Letter(Context c){
+    public Letter(Context c){
         firstRound = true;
         txt = new TextView(c);
         pos = 0;

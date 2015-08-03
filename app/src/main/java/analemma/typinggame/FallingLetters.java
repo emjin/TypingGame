@@ -94,6 +94,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         letterView.setX(letters[i].getPos());
         letterView.setY(-LET_SIZE);
         letterView.setTextColor(getResources().getColor(R.color.letter));
+        letterView.setVisibility(TextView.VISIBLE);
         letterView.setTextSize(LET_SIZE);
         //animate
         if(letters[i].isFirstRound()){
@@ -165,16 +166,6 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
         @Override
         public void	onAnimationCancel(Animator anim){
-
-        }
-
-        @Override
-        public void onAnimationRepeat(Animator anim){
-        }
-
-        @Override
-        public void onAnimationEnd(Animator anim){
-            letters[let].setLet(-1); //letter no longer on screen, can't type it
             ImageView bloodView = new ImageView(rl.getContext());
             bloodView.setX(letters[let].getTextView().getX()-(float)(LET_SIZE*2.5));
             bloodView.setY(letters[let].getTextView().getY()-(float)(LET_SIZE*2.5));
@@ -184,7 +175,17 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
             bloodView.setImageDrawable(getResources().getDrawable(R.drawable.bloodsplatter));
             rl.addView(bloodView);
-            }
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator anim){
+        }
+
+        @Override
+        public void onAnimationEnd(Animator anim){
+            letters[let].setLet(-1); //letter no longer on screen, can't type it
+            letters[let].getTextView().setVisibility(TextView.INVISIBLE);
+        }
 
         @Override
         public void onAnimationStart(Animator anim){
