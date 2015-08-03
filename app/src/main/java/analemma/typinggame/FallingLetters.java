@@ -26,6 +26,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
     private RelativeLayout rl;
     private int visHeight; //height of visible area
+    private int scrWidth;
 
     private int gameScore;
     private int numWrong;
@@ -38,6 +39,11 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             KeyEvent.KEYCODE_T, KeyEvent.KEYCODE_U, KeyEvent.KEYCODE_V, KeyEvent.KEYCODE_W, KeyEvent.KEYCODE_X,
             KeyEvent.KEYCODE_Y, KeyEvent.KEYCODE_Z}; //ints representing key events
 
+    //these are all in milliseconds
+    private static int DELAY_MIN = 2000;
+    private static int DELAY_RANGE = 2000;
+    private static int DURATION_RANGE = 8000;
+    private static int DURATION_MIN = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +54,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int scrWidth = size.x;
+        scrWidth = size.x;
         visHeight = size.y;
 
         rl = (RelativeLayout) findViewById(R.id.activity_falling_letters);
@@ -69,7 +75,10 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
                         visHeight = r.height();
                     }
                 });
+        startGame();
+    }
 
+    private void startGame(){
         //inits the letters and their positions
         int numLets = (int)(scrWidth/((1+LET_SPACING)*LET_SIZE));
         letters = new Letter[numLets];
@@ -98,13 +107,13 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         letterView.setTextSize(LET_SIZE);
         //animate
         if(letters[i].isFirstRound()){
-            letterView.animate().setStartDelay((long)(2000*Math.random()) + 2000);
+            letterView.animate().setStartDelay((long)(DELAY_RANGE*Math.random()) + DELAY_MIN);
             letters[i].setFirstRound(false);
         }
         else{
             letterView.animate().setStartDelay(0);
         }
-        letterView.animate().setDuration((long)(8000*Math.random())).y(visHeight);
+        letterView.animate().setDuration((long)(DURATION_RANGE*Math.random()+DURATION_MIN)).y(visHeight);
         letterView.animate().setListener(new Listener(i)); //listens for the end of the animations
         //I'm assuming it breaks from this if you press the right key
         //Not sure what happens to this function since we just called another one from outside...meh
@@ -169,10 +178,11 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         @Override
         public void	onAnimationCancel(Animator anim){
             ImageView bloodView = new ImageView(rl.getContext());
-            bloodView.setX(letters[let].getTextView().getX()-(float)(LET_SIZE*2.5));
-            bloodView.setY(letters[let].getTextView().getY()-(float)(LET_SIZE*2.5));
+            bloodView.setX(letters[let].getTextView().getX()-(float)(LET_SIZE*FONT_TO_PIXELS/2));
+            bloodView.setY(letters[let].getTextView().getY()-(float)(LET_SIZE*FONT_TO_PIXELS/2));
 
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LET_SIZE*5, LET_SIZE*5);//use real vals l8r
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LET_SIZE*(int)FONT_TO_PIXELS, LET_SIZE*(int)FONT_TO_PIXELS);
             bloodView.setLayoutParams(layoutParams);
 
             bloodView.setImageDrawable(getResources().getDrawable(R.drawable.bloodsplatter));
