@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 public class FallingLetters extends ActionBarActivity implements KeyEvent.Callback {
 
     private static final int LET_SIZE = 40;
@@ -29,7 +31,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private int scrWidth;
 
     private int gameScore;
-    private int numWrong;
+    private int escapedLets = 0;
+    private int numLets;
 
     private Letter[] letters;
     private int[] keyEvents = {KeyEvent.KEYCODE_A, KeyEvent.KEYCODE_B, KeyEvent.KEYCODE_C, KeyEvent.KEYCODE_D,
@@ -82,7 +85,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
     private void startGame(){
         //inits the letters and their positions
-        int numLets = (int)(scrWidth/((1+LET_SPACING)*LET_SIZE));
+        numLets = (scrWidth/((1+LET_SPACING)*LET_SIZE));
         letters = new Letter[numLets];
         //int pos = 0;
         for(int i=0;i<letters.length;i++){
@@ -133,10 +136,12 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             if(letters[i].getLet() != -1) {
                 if (keyCode == getKeyEvent(letters[i].getLet())) {
                     gameScore++;
+                    escapedLets--;
                     letters[i].getTextView().setText("");
                     letters[i].getTextView().animate().cancel();
                     TextView scoreText = (TextView) findViewById(R.id.score);
-                    scoreText.setText("Score: " + gameScore + " ");
+                    //scoreText.setText("Score: " + gameScore + " ");
+                    scoreText.setText("Escaped: "+escapedLets+"/"+numLets+" ");
                     createLetter(i);
                     return true;
                 }
@@ -199,6 +204,9 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         public void onAnimationEnd(Animator anim){
             letters[let].setLet(-1); //letter no longer on screen, can't type it
             rl.removeView(letters[let].getTextView());
+            escapedLets++;
+            TextView scoreText = (TextView) findViewById(R.id.score);
+            scoreText.setText("Escaped: "+escapedLets+"/"+numLets+" ");//TODO remove, just for testing
         }
 
         @Override

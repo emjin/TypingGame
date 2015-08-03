@@ -8,10 +8,10 @@
     <!--android:background="@drawable/analemma"
     tools:context=".MainActivity"-->
 
-    <!--analemma.typinggame.AnalemmaView
+    <analemma.typinggame.AnalemmaView
         android:layout_width = "match_parent"
         android:layout_height = "match_parent"
-        android:id = "@+id/analemmaAnim" /-->
+        android:id = "@+id/analemmaAnim" />
 
     <TextView android:text="@string/title_text"
         android:layout_width="wrap_content"
