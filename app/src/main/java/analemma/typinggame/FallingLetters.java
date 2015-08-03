@@ -94,11 +94,11 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         letterView.setX(letters[i].getPos());
         letterView.setY(-LET_SIZE);
         letterView.setTextColor(getResources().getColor(R.color.letter));
-        letterView.setVisibility(TextView.VISIBLE);
+        rl.addView(letterView);
         letterView.setTextSize(LET_SIZE);
         //animate
         if(letters[i].isFirstRound()){
-            rl.addView(letterView); //we only need to add it to the view the first time
+
             letterView.animate().setStartDelay((long)(2000*Math.random()) + 2000);
             letters[i].setFirstRound(false);
         }
@@ -184,7 +184,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         @Override
         public void onAnimationEnd(Animator anim){
             letters[let].setLet(-1); //letter no longer on screen, can't type it
-            letters[let].getTextView().setVisibility(TextView.INVISIBLE);
+            rl.removeView(letters[let].getTextView());
         }
 
         @Override
