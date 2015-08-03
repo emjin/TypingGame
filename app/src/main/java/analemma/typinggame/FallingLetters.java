@@ -98,9 +98,11 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         letterView.setTextSize(LET_SIZE);
         //animate
         if(letters[i].isFirstRound()){
-
             letterView.animate().setStartDelay((long)(2000*Math.random()) + 2000);
             letters[i].setFirstRound(false);
+        }
+        else{
+            letterView.animate().setStartDelay(0);
         }
         letterView.animate().setDuration((long)(8000*Math.random())).y(visHeight);
         letterView.animate().setListener(new Listener(i)); //listens for the end of the animations
