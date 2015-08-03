@@ -22,6 +22,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
     private static final int LET_SIZE = 40;
     private static final int LET_SPACING = 1; //as a fraction of letter size
+    private static final float FONT_TO_PIXELS = 3.5f; //font pts:pixels
 
     private RelativeLayout rl;
     private int visHeight; //height of visible area
@@ -50,25 +51,24 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         int scrWidth = size.x;
         visHeight = size.y;
 
-
-        final Window mRootWindow = getWindow();
-        View mRootView = mRootWindow.getDecorView().findViewById(android.R.id.content);
-        mRootView.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    public void onGlobalLayout(){
-                        Rect r = new Rect();
-                        View view = mRootWindow.getDecorView();
-                        view.getWindowVisibleDisplayFrame(r);
-                        visHeight = r.height(); //TODO ????????????
-                    }
-                });
-
         rl = (RelativeLayout) findViewById(R.id.activity_falling_letters);
         rl.setBackgroundColor(getResources().getColor(R.color.background));//black background
 
         //force keyboard to show. thanks stackoverflow
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+        final Window mRootWindow = getWindow();
+        View mRootView = mRootWindow.getDecorView().findViewById(android.R.id.content);
+        mRootView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    public void onGlobalLayout() {
+                        Rect r = new Rect();
+                        View view = mRootWindow.getDecorView();
+                        view.getWindowVisibleDisplayFrame(r);
+                        visHeight = r.height();
+                    }
+                });
 
         //inits the letters and their positions
         int numLets = (int)(scrWidth/((1+LET_SPACING)*LET_SIZE));
@@ -92,7 +92,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         TextView letterView = letters[i].getTextView();
 
         letterView.setX(letters[i].getPos());
-        letterView.setY(-LET_SIZE);
+        letterView.setY(-LET_SIZE * FONT_TO_PIXELS);
         letterView.setTextColor(getResources().getColor(R.color.letter));
         rl.addView(letterView);
         letterView.setTextSize(LET_SIZE);
