@@ -40,10 +40,12 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             KeyEvent.KEYCODE_Y, KeyEvent.KEYCODE_Z}; //ints representing key events
 
     //these are all in milliseconds
-    private static int DELAY_MIN = 2000;
-    private static int DELAY_RANGE = 2000;
-    private static int DURATION_RANGE = 8000;
-    private static int DURATION_MIN = 2000;
+    private static int delayMin = 2000;
+    private static int delayRange = 2000;
+    private static int durationRange = 8000;
+    private static int durationMin = 2000;
+
+    private static int splatterRange = 100; //in pixels
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,13 +109,13 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         letterView.setTextSize(LET_SIZE);
         //animate
         if(letters[i].isFirstRound()){
-            letterView.animate().setStartDelay((long)(DELAY_RANGE*Math.random()) + DELAY_MIN);
+            letterView.animate().setStartDelay((long)(delayRange *Math.random()) + delayMin);
             letters[i].setFirstRound(false);
         }
         else{
             letterView.animate().setStartDelay(0);
         }
-        letterView.animate().setDuration((long)(DURATION_RANGE*Math.random()+DURATION_MIN)).y(visHeight);
+        letterView.animate().setDuration((long)(durationRange *Math.random()+ durationMin)).y(visHeight);
         letterView.animate().setListener(new Listener(i)); //listens for the end of the animations
         //I'm assuming it breaks from this if you press the right key
         //Not sure what happens to this function since we just called another one from outside...meh
@@ -178,11 +180,11 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         @Override
         public void	onAnimationCancel(Animator anim){
             ImageView bloodView = new ImageView(rl.getContext());
-            bloodView.setX(letters[let].getTextView().getX()-(float)(LET_SIZE*FONT_TO_PIXELS/2));
+            bloodView.setX(letters[let].getTextView().getX() - (float) (LET_SIZE * FONT_TO_PIXELS / 2));
             bloodView.setY(letters[let].getTextView().getY()-(float)(LET_SIZE*FONT_TO_PIXELS/2));
 
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                    LET_SIZE*(int)FONT_TO_PIXELS, LET_SIZE*(int)FONT_TO_PIXELS);
+            int splatterSize = (int)(splatterRange *Math.random()) + LET_SIZE*(int)FONT_TO_PIXELS; //min size is font size
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(splatterSize, splatterSize);
             bloodView.setLayoutParams(layoutParams);
 
             bloodView.setImageDrawable(getResources().getDrawable(R.drawable.bloodsplatter));
