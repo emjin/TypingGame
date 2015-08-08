@@ -2,4 +2,5 @@
 <resources>
     <color name="background">#000000</color>
     <color name="letter">#ffffff</color>
+    <color name="main">#99eeff</color>
 </resources>
