@@ -50,8 +50,10 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     //these are all in milliseconds
     private static int delayMin = 2000;
     private static int delayRange = 2000;
-    private static int durationRange = 8000;
-    private static int durationMin = 2000;
+    private static int[] durationRanges = {8000, 7000, 6000, 5000, 4000, 3000};
+    private int[] durationMins = {2000, 1000, 800, 500, 400, 300};
+    private int durationRange;
+    private int durationMin;
 
     private static int splatterRange = 100; //in pixels
 
@@ -61,6 +63,13 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         setContentView(R.layout.activity_falling_letters);
         Intent intent = getIntent();
         level = intent.getIntExtra(MainActivity.LEVEL_MESSAGE, 1); //This means that if there's ever an error, the user is automatically put to level 1
+        if (level <= durationRanges.length) {
+            durationRange = durationRanges[level - 1];
+            durationMin = durationMins[level - 1];
+        }else {
+            durationRange = 1000;
+            durationMin = 200;
+        }
         gameScore = 0;
 
         Display display = getWindowManager().getDefaultDisplay();
