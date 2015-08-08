@@ -2,6 +2,7 @@ package analemma.typinggame;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v7.app.ActionBarActivity;
@@ -21,15 +22,18 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 public class FallingLetters extends ActionBarActivity implements KeyEvent.Callback {
+    public static final String SEND_LEVEL_MESSAGE = "com.analemma.typinggame.send_level";
 
     private static final int LET_SIZE = 40;
     private static final int LET_SPACING = 1; //as a fraction of letter size
     private static final float FONT_TO_PIXELS = 3.5f; //font pts:pixels
+    private final int THRESHOLD = 3;
 
     private RelativeLayout rl;
     private int visHeight; //height of visible area
     private int scrWidth;
 
+    private int level;
     private int gameScore;
     private int escapedLets = 0;
     private int numLets;
@@ -54,6 +58,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_falling_letters);
+        Intent intent = getIntent();
+        level = intent.getIntExtra(MainActivity.LEVEL_MESSAGE, 1); //This means that if there's ever an error, the user is automatically put to level 1
         gameScore = 0;
 
         Display display = getWindowManager().getDefaultDisplay();
@@ -150,6 +156,12 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         return false;
     }
 
+    public void showScore(){
+        Intent intent = new Intent(this, ScorePage.class);
+        intent.putExtra(SEND_LEVEL_MESSAGE, level);
+        startActivity(intent);
+    }
+
     @Override
     public void onStop(){
         super.onStop();
@@ -207,6 +219,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             escapedLets++;
             TextView scoreText = (TextView) findViewById(R.id.score);
             scoreText.setText("Escaped: "+escapedLets+"/"+numLets+" ");//TODO remove, just for testing
+            if(letters.length-escapedLets <= THRESHOLD) showScore();
         }
 
         @Override

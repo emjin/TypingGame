@@ -1,17 +1,30 @@
 package analemma.typinggame;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 public class ScorePage extends ActionBarActivity {
+    int level;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score_page);
+        Intent intent = getIntent();
+        level = intent.getIntExtra(FallingLetters.SEND_LEVEL_MESSAGE, 1);
+    }
+
+    public void begin(View view){
+        //An intent represents an app's "intent to do something", usually start another activity
+        Intent intent = new Intent(this, FallingLetters.class);
+        intent.putExtra(MainActivity.LEVEL_MESSAGE, level+1);
+        //Finish the intent
+        startActivity(intent);
     }
 
     @Override

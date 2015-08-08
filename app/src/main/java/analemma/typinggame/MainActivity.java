@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 
 public class MainActivity extends ActionBarActivity {
+    public static final String LEVEL_MESSAGE = "com.analemma.typinggame.level";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +33,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void begin(View view){
+        int start_level = 1;
         //An intent represents an app's "intent to do something", usually start another activity
         Intent intent = new Intent(this, FallingLetters.class);
+        intent.putExtra(LEVEL_MESSAGE, start_level);
         //Finish the intent
         startActivity(intent);
     }
