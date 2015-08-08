@@ -20,21 +20,5 @@
         android:textColor="#DDDD22"
         />
 
-    <TextView android:id="@+id/let1"
-        android:layout_width="@dimen/falling_let_size"
-        android:layout_height="@dimen/falling_let_size"
-        android:textColor="#ffffff"
-        />
-    <TextView android:id="@+id/let2"
-        android:layout_width="@dimen/falling_let_size"
-        android:layout_height="@dimen/falling_let_size"
-        android:textColor="#ffffff"
-        />
-    <TextView android:id="@+id/let3"
-        android:layout_width="@dimen/falling_let_size"
-        android:layout_height="@dimen/falling_let_size"
-        android:textColor="#ffffff"
-        />
-
 
 </RelativeLayout>
