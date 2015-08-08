@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="background">#000000</color>
+    <color name="mainText">#000000</color>
+    <color name="captionText">#777799</color>
     <color name="letter">#ffffff</color>
     <color name="main">#99eeff</color>
+    <color name="yay">#11ffaa</color>
 </resources>

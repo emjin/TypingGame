@@ -11,13 +11,14 @@
 
     <TextView android:id="@+id/scoreBox" android:text="Score:" android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:textSize="60dp"
-        android:textColor="@color/background"/>
+        android:textColor="@color/mainText" android:paddingBottom="12dp"/>
 
-    <TextView android:id="@+id/levelMessage" android:text="Filler text"
+    <TextView android:id="@+id/levelMessage" android:text="You've passed the level!"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:textColor="@color/background" />
+        android:textColor="@color/captionText" android:textSize="50dp"
+        android:paddingBottom="40dp"/>
 
-    <Button android:text="" android:layout_width="wrap_content"
+    <Button android:id="@+id/contButton" android:text="" android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:textSize="40dp"
-         />
+        android:onClick="begin" />
 </LinearLayout>

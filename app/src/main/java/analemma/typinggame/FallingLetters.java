@@ -23,6 +23,7 @@ import org.w3c.dom.Text;
 
 public class FallingLetters extends ActionBarActivity implements KeyEvent.Callback {
     public static final String SEND_LEVEL_MESSAGE = "com.analemma.typinggame.send_level";
+    public static final String SCORE_MESSAGE = "com.analemma.typinggame.game_score";
 
     private static final int LET_SIZE = 40;
     private static final int LET_SPACING = 1; //as a fraction of letter size
@@ -159,6 +160,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     public void showScore(){
         Intent intent = new Intent(this, ScorePage.class);
         intent.putExtra(SEND_LEVEL_MESSAGE, level);
+        intent.putExtra(SCORE_MESSAGE, gameScore);
         startActivity(intent);
     }
 
