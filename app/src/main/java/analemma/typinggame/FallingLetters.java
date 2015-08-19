@@ -45,7 +45,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             KeyEvent.KEYCODE_J, KeyEvent.KEYCODE_K, KeyEvent.KEYCODE_L, KeyEvent.KEYCODE_M, KeyEvent.KEYCODE_N,
             KeyEvent.KEYCODE_O, KeyEvent.KEYCODE_P, KeyEvent.KEYCODE_Q, KeyEvent.KEYCODE_R, KeyEvent.KEYCODE_S,
             KeyEvent.KEYCODE_T, KeyEvent.KEYCODE_U, KeyEvent.KEYCODE_V, KeyEvent.KEYCODE_W, KeyEvent.KEYCODE_X,
-            KeyEvent.KEYCODE_Y, KeyEvent.KEYCODE_Z}; //ints representing key events
+            KeyEvent.KEYCODE_Y, KeyEvent.KEYCODE_Z, KeyEvent.KEYCODE_POUND, KeyEvent.KEYCODE_PLUS, KeyEvent.KEYCODE_EQUALS};
+            //ints representing key events
 
     //these are all in milliseconds
     private static int delayMin = 2000;
@@ -54,6 +55,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private int[] durationMins = {2000, 1000, 800, 500, 400, 300};
     private int durationRange;
     private int durationMin;
+    private int durationTimer = -1;
 
     private static int splatterRange = 100; //in pixels
 
@@ -102,7 +104,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private void startGame(){
         //inits the letters and their positions
         numLets = (scrWidth/((1+LET_SPACING)*LET_SIZE));
-        letters = new Letter[numLets];
+        int lets = numLets + (int)(Math.random()*4);
+        letters = new Letter[lets];
         //int pos = 0;
         for(int i=0;i<letters.length;i++){
             letters[i] = new Letter(this); //init
@@ -115,7 +118,10 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         letters[i].setPos(i * (1+LET_SPACING)*LET_SIZE); // set position
 
         //choose a letter
-        int letterNum = (int) (26*Math.random()) + 'A';
+        int letterNum;
+        int[] powerUpChoices = {'+', '#', '='};
+        if(i < numLets) letterNum = (int) (26 * Math.random()) + 'A';
+        else letterNum = powerUpChoices[(int)(Math.random()*3)];
         letters[i].setLet(letterNum);
 
         //add to layout in proper location
@@ -127,17 +133,16 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         rl.addView(letterView);
         letterView.setTextSize(LET_SIZE);
         //animate
-        if(letters[i].isFirstRound()){
-            letterView.animate().setStartDelay((long)(delayRange *Math.random()) + delayMin);
-            letters[i].setFirstRound(false);
+        if(i < numLets || Math.random()*10 < 4) {
+            if (letters[i].isFirstRound()) {
+                letterView.animate().setStartDelay((long) (delayRange * Math.random()) + delayMin);
+                letters[i].setFirstRound(false);
+            } else {
+                letterView.animate().setStartDelay(0);
+            }
+            letterView.animate().setDuration((long) (durationRange * Math.random() + durationMin)).y(visHeight);
+            letterView.animate().setListener(new Listener(i)); //listens for the end of the animations
         }
-        else{
-            letterView.animate().setStartDelay(0);
-        }
-        letterView.animate().setDuration((long)(durationRange *Math.random()+ durationMin)).y(visHeight);
-        letterView.animate().setListener(new Listener(i)); //listens for the end of the animations
-        //I'm assuming it breaks from this if you press the right key
-        //Not sure what happens to this function since we just called another one from outside...meh
     }
 
     //gets the keyevent associated with given capital letter
@@ -150,16 +155,29 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     public boolean onKeyDown(int keyCode, KeyEvent event){
         for(int i=0;i<letters.length;i++){
             if(letters[i].getLet() != -1) {
-                if (keyCode == getKeyEvent(letters[i].getLet())) {
-                    gameScore++;
-                    escapedLets--;
-                    letters[i].getTextView().setText("");
-                    letters[i].getTextView().animate().cancel();
-                    TextView scoreText = (TextView) findViewById(R.id.score);
-                    //scoreText.setText("Score: " + gameScore + " ");
-                    scoreText.setText("Escaped: "+escapedLets+"/"+numLets+" ");
-                    createLetter(i);
-                    return true;
+                if(keyCode == getKeyEvent(letters[i].getLet())) {
+                    if(i < numLets) {
+                        //Increment durationTimer if necessary (powerup)
+                        if(durationTimer != -1) durationTimer += 1;
+                        if(durationTimer > Math.random()*3+2){
+                            durationRange /= 2;
+                            durationTimer = -1;
+                        }
+                        //Adjust stuff
+                        gameScore++;
+                        escapedLets--;
+                        TextView scoreText = (TextView) findViewById(R.id.score);
+                        scoreText.setText("Escaped: " + escapedLets + "/" + numLets + " ");
+                        //Make new letter
+                        letters[i].getTextView().setText("");
+                        letters[i].getTextView().animate().cancel();
+                        createLetter(i);
+                        return true;
+                    }
+                    else {
+                        durationRange *= 2;
+                        durationTimer = 0;
+                    }
                 }
             }
         }
