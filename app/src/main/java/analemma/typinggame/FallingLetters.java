@@ -39,6 +39,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private int escapedLets = 0;
     private int numLets;
 
+    int[] powerUpChoices = {'#', '+', '='};
     private Letter[] letters;
     private int[] keyEvents = {KeyEvent.KEYCODE_A, KeyEvent.KEYCODE_B, KeyEvent.KEYCODE_C, KeyEvent.KEYCODE_D,
             KeyEvent.KEYCODE_E, KeyEvent.KEYCODE_F, KeyEvent.KEYCODE_G, KeyEvent.KEYCODE_H, KeyEvent.KEYCODE_I,
@@ -104,7 +105,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private void startGame(){
         //inits the letters and their positions
         numLets = (scrWidth/((1+LET_SPACING)*LET_SIZE));
-        int lets = numLets + (int)(Math.random()*4);
+        int lets = numLets + (int)(Math.random()*10); //multiple is, like, max powerups
         letters = new Letter[lets];
         //int pos = 0;
         for(int i=0;i<letters.length;i++){
@@ -119,9 +120,9 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
         //choose a letter
         int letterNum;
-        int[] powerUpChoices = {'+', '#', '='};
+
         if(i < numLets) letterNum = (int) (26 * Math.random()) + 'A';
-        else letterNum = powerUpChoices[(int)(Math.random()*3)];
+        else letterNum = powerUpChoices[(int)(Math.random()*powerUpChoices.length)];
         letters[i].setLet(letterNum);
 
         //add to layout in proper location
@@ -145,9 +146,13 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         }
     }
 
-    //gets the keyevent associated with given capital letter
+    //gets the keyevent associated with given capital letter or powerup
     private int getKeyEvent(int letter){
-        return keyEvents[letter - 'A'];
+        if(letter >= 'A' && letter <= 'Z') return keyEvents[letter - 'A'];
+        if(letter == '#') return KeyEvent.KEYCODE_POUND;
+        if(letter == '+') return KeyEvent.KEYCODE_PLUS;
+        if(letter == '=') return KeyEvent.KEYCODE_EQUALS;
+        return -50;//poopbag return statement
     }
 
     //implementation of KeyEvent.Callback method
