@@ -31,7 +31,7 @@ public class ScorePage extends ActionBarActivity {
         Button contButton = (Button)findViewById(R.id.contButton);
         scoreView.setText("Score:" + score);
         if(score > threshold){
-            levelView.setText("You've passed the level!");
+            levelView.setText("You've passed level "+level+"!");
             levelView.setTextColor(getResources().getColor(R.color.yay));
             contButton.setText(getResources().getString(R.string.next_button));
             restart.putExtra(MainActivity.LEVEL_MESSAGE, level + 1);

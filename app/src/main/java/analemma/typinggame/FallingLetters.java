@@ -51,8 +51,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
     //these are all in milliseconds
     private static int delayMin = 2000;
-    private static int delayRange = 2000;
-    private static int[] durationRanges = {8000, 7000, 6000, 5000, 4000, 3000};
+    private static int delayRange = 4000;
+    private static int[] durationRanges = {18000, 17000, 16000, 15000, 14000, 13000};
     private int[] durationMins = {2000, 1000, 800, 500, 400, 300};
     private int durationRange;
     private int durationMin;
@@ -73,6 +73,10 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             durationRange = 1000;
             durationMin = 200;
         }
+        TextView levelText = (TextView) findViewById(R.id.level);
+        levelText.setText("Level: " + level + " ");
+
+
         gameScore = 0;
 
         Display display = getWindowManager().getDefaultDisplay();
@@ -141,6 +145,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             } else {
                 letterView.animate().setStartDelay(0);
             }
+
             letterView.animate().setDuration((long) (durationRange * Math.random() + durationMin)).y(visHeight);
             letterView.animate().setListener(new Listener(i)); //listens for the end of the animations
         }
