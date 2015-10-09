@@ -16,7 +16,9 @@
     <TextView android:id="@+id/levelMessage" android:text="You've passed the level!"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:textColor="@color/captionText" android:textSize="50dp"
-        android:paddingBottom="40dp"/>
+        android:paddingBottom="40dp"
+
+        />
 
     <Button android:id="@+id/contButton" android:text="" android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:textSize="40dp"

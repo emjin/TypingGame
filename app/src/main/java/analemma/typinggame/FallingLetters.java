@@ -19,8 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 public class FallingLetters extends ActionBarActivity implements KeyEvent.Callback {
     public static final String SEND_LEVEL_MESSAGE = "com.analemma.typinggame.send_level";
     public static final String SCORE_MESSAGE = "com.analemma.typinggame.game_score";
@@ -49,14 +47,23 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             KeyEvent.KEYCODE_Y, KeyEvent.KEYCODE_Z, KeyEvent.KEYCODE_POUND, KeyEvent.KEYCODE_PLUS, KeyEvent.KEYCODE_EQUALS};
             //ints representing key events
 
-    //these are all in milliseconds
-    private static int delayMin = 2000;
-    private static int delayRange = 4000;
-    private static int[] durationRanges = {18000, 17000, 16000, 15000, 14000, 13000};
-    private int[] durationMins = {2000, 1000, 800, 500, 400, 300};
+    //GIANT BLOCK OF TIMING VARS: these are all in milliseconds
+    //base vars; things that don't change
+    private int delayMin = 2000;
+    private int delayRange = 4000;
+    //select from these based on level
+    private int[] durationRanges = {18000, 17000, 16000, 15000, 14000, 13000, 12000};
+    private int[] durationMins = {2000, 1000, 800, 500, 400, 300, 200};
+
+    //how much it speeds up based on round #
+    private int roundDecrement = 400;
+
+    //specific to this run
     private int durationRange;
     private int durationMin;
-    private int durationTimer = -1;
+
+    //??? anna cant comment this bc she dont know
+    private int powerUpDurationTimer = -1;
 
     private static int splatterRange = 100; //in pixels
 
@@ -70,8 +77,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             durationRange = durationRanges[level - 1];
             durationMin = durationMins[level - 1];
         }else {
-            durationRange = 1000;
-            durationMin = 200;
+            durationRange = durationRanges[durationRanges.length-1];
+            durationMin = durationMins[durationMins.length-1];
         }
         TextView levelText = (TextView) findViewById(R.id.level);
         levelText.setText("Level: " + level + " ");
@@ -137,16 +144,21 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         letterView.setTextColor(getResources().getColor(R.color.letter));
         rl.addView(letterView);
         letterView.setTextSize(LET_SIZE);
+
         //animate
         if(i < numLets || Math.random()*10 < 4) {
+            //TODO it's dumb to store isFirstRound and also round number
             if (letters[i].isFirstRound()) {
                 letterView.animate().setStartDelay((long) (delayRange * Math.random()) + delayMin);
                 letters[i].setFirstRound(false);
             } else {
                 letterView.animate().setStartDelay(0);
             }
-
-            letterView.animate().setDuration((long) (durationRange * Math.random() + durationMin)).y(visHeight);
+            //faster based on round #
+            int roundDisadvantage = letters[i].getNumRegens()*roundDecrement;
+            long speed = (long) (durationRange * Math.random() + durationMin) - roundDisadvantage;
+            if(speed < durationMin) speed = durationMin; //reverse deadband so it's not ridonkulous
+            letterView.animate().setDuration(speed).y(visHeight);
             letterView.animate().setListener(new Listener(i)); //listens for the end of the animations
         }
     }
@@ -167,11 +179,11 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             if(letters[i].getLet() != -1) {
                 if(keyCode == getKeyEvent(letters[i].getLet())) {
                     if(i < numLets) {
-                        //Increment durationTimer if necessary (powerup)
-                        if(durationTimer != -1) durationTimer += 1;
-                        if(durationTimer > Math.random()*3+2){
+                        //Increment powerUpDurationTimer if necessary (powerup)
+                        if(powerUpDurationTimer != -1) powerUpDurationTimer += 1;
+                        if(powerUpDurationTimer > Math.random()*3+2){
                             durationRange /= 2;
-                            durationTimer = -1;
+                            powerUpDurationTimer = -1;
                         }
                         //Adjust stuff
                         gameScore++;
@@ -181,12 +193,13 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
                         //Make new letter
                         letters[i].getTextView().setText("");
                         letters[i].getTextView().animate().cancel();
+                        letters[i].incNumRegens();//increment how many rounds it's been through
                         createLetter(i);
                         return true;
                     }
                     else {
                         durationRange *= 2;
-                        durationTimer = 0;
+                        powerUpDurationTimer = 0;
                     }
                 }
             }

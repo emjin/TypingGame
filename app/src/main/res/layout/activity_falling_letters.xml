@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/analemma"
@@ -12,34 +13,41 @@
         android:layout_height="match_parent"
         android:scaleType="center"
         android:src="@drawable/analemma" /-->
-
-    <TextView android:id="@+id/level"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:text="Score: 0 "
-        android:gravity="end"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        android:textColor="#DDDD22"
-        />
+        <TextView android:id="@+id/level"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:text="Score: 0 "
+            android:gravity="end"
 
-    <TextView android:id="@+id/score"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:text="Level: 1 "
-        android:gravity="end"
-        android:textColor="#DDDD22"
-        android:layout_above="@id/level"
-        />
+            android:textColor="#DDDD22"
+            />
 
-    <TextView android:id="@+id/letsleft"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:text="Escaped: "
-        android:gravity="end"
-        android:textColor="#DDDD22"
-        />
+        <TextView android:id="@+id/score"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:text="Level: 1 "
+            android:gravity="end"
+            android:textColor="#DDDD22"
+            android:layout_above="@id/level"
+            />
+
+        <TextView android:id="@+id/letsleft"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:text="Escaped: "
+            android:gravity="end"
+            android:textColor="#DDDD22"
+            />
+
+    </LinearLayout>
+
 
 </RelativeLayout>

@@ -12,6 +12,7 @@ public class Letter {
     private int let; //A-Z
     private TextView txt;
     private int pos; //x position
+    private int numRegens = 0;
 
     public Letter(Context c){
         firstRound = true;
@@ -33,6 +34,9 @@ public class Letter {
     public int getPos(){return pos;}
     public void setPos(int p){pos = p;}
 
+    public int getNumRegens(){return numRegens;}
+    public void setNumRegens(int n){numRegens = n;}
+    public void incNumRegens(){numRegens++;} //increment the number of regenerations
 
 
 
