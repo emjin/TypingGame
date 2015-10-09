@@ -192,7 +192,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
                         scoreText.setText("Score: " + gameScore + " ");
 
                         TextView escText = (TextView) findViewById(R.id.letsleft);
-                        scoreText.setText("Escaped: " + escapedLets + "/" + letters.length + " ");
+                        escText.setText("Escaped: " + escapedLets + "/" + letters.length + " ");
                         //Make new letter
                         letters[i].getTextView().setText("");
                         letters[i].getTextView().animate().cancel();
@@ -272,8 +272,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             letters[let].setLet(-1); //letter no longer on screen, can't type it
             rl.removeView(letters[let].getTextView());
             escapedLets++;
-            //TextView letsText = (TextView) findViewById(R.id.letsleft);
-           // letsText.setText("Escaped: "+escapedLets+"/"+numLets+" ");//TODO remove, just for testing
+            TextView escText = (TextView) findViewById(R.id.letsleft);
+            escText.setText("Escaped: " + escapedLets + "/" + letters.length + " ");
             if(letters.length-escapedLets <= THRESHOLD) showScore();
             //TODO ^^ i think this may be causing problems, since something happened with letters.length & the powerups
         }
