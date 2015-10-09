@@ -36,6 +36,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private int gameScore;
     private int escapedLets = 0;
     private int numLets;
+    private int numPowerUps;
 
     int[] powerUpChoices = {'#', '+', '='};
     private Letter[] letters;
@@ -116,7 +117,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private void startGame(){
         //inits the letters and their positions
         numLets = (scrWidth/((1+LET_SPACING)*LET_SIZE));
-        int numPowerUps = (int) (Math.random()*10);
+        numPowerUps = (int) (Math.random()*10);
         //TODO let's assume numPowerUps < numLets bc i dont feel like adding a check right now
         letters = new Letter[numLets];
         //int pos = 0;
@@ -146,8 +147,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         rl.addView(letterView);
         letterView.setTextSize(LET_SIZE);
 
-        //animate
-        if(i < numLets || Math.random()*10 < 4) {
+        //animate if it's a normal letter OR a 4/10 chance of getting a power up
+        if(i < numLets - numPowerUps || Math.random()*10 < 4) {
             //TODO it's dumb to store isFirstRound and also round number
             if (letters[i].isFirstRound()) {
                 letterView.animate().setStartDelay((long) (delayRange * Math.random()) + delayMin);
