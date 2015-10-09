@@ -116,8 +116,9 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private void startGame(){
         //inits the letters and their positions
         numLets = (scrWidth/((1+LET_SPACING)*LET_SIZE));
-        int lets = numLets + (int)(Math.random()*10); //multiple is, like, max powerups
-        letters = new Letter[lets];
+        int numPowerUps = (int) (Math.random()*10);
+        //TODO let's assume numPowerUps < numLets bc i dont feel like adding a check right now
+        letters = new Letter[numLets];
         //int pos = 0;
         for(int i=0;i<letters.length;i++){
             letters[i] = new Letter(this); //init
@@ -132,8 +133,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         //choose a letter
         int letterNum;
 
-        if(i < numLets) letterNum = (int) (26 * Math.random()) + 'A';
-        else letterNum = powerUpChoices[(int)(Math.random()*powerUpChoices.length)];
+        if(i < numLets - numPowerUps) letterNum = (int) (26 * Math.random()) + 'A'; //a letter
+        else letterNum = powerUpChoices[(int)(Math.random()*powerUpChoices.length)]; //powerup
         letters[i].setLet(letterNum);
 
         //add to layout in proper location
