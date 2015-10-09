@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="30sp"
-            android:text="Score: 0 "
+            android:text="Level: 1 "
             android:gravity="end"
 
             android:textColor="#DDDD22"
@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="30sp"
-            android:text="Level: 1 "
+            android:text="Score: 0 "
             android:gravity="end"
             android:textColor="#DDDD22"
             android:layout_above="@id/level"

@@ -190,6 +190,9 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
                         escapedLets--;
                         TextView scoreText = (TextView) findViewById(R.id.score);
                         scoreText.setText("Score: " + gameScore + " ");
+
+                        TextView escText = (TextView) findViewById(R.id.letsleft);
+                        scoreText.setText("Escaped: " + escapedLets + "/" + letters.length + " ");
                         //Make new letter
                         letters[i].getTextView().setText("");
                         letters[i].getTextView().animate().cancel();
