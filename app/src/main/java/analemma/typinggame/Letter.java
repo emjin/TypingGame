@@ -8,6 +8,7 @@ import android.widget.TextView;
  */
 public class Letter {
 
+    private boolean isPowerUp;
     private boolean firstRound;
     private int let; //A-Z
     private TextView txt;
@@ -38,6 +39,7 @@ public class Letter {
     public void setNumRegens(int n){numRegens = n;}
     public void incNumRegens(){numRegens++;} //increment the number of regenerations
 
-
+    public boolean isPowerUp(){return isPowerUp;}
+    public void setIsPowerUp(boolean b){isPowerUp=b;}
 
 }

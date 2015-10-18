@@ -36,7 +36,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private int gameScore;
     private int escapedLets = 0;
     private int numLets;
-    private int numPowerUps;
+   // private int numPowerUps;
 
     int[] powerUpChoices = {'#', '+', '='};
     private Letter[] letters;
@@ -53,7 +53,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private int delayMin = 2000;
     private int delayRange = 4000;
     //select from these based on level
-    private int[] durationRanges = {18000, 17000, 16000, 15000, 14000, 13000, 12000};
+    private int[] durationRanges = {4000, 3000, 2500, 2250, 1000, 5000, 2500};
     private int[] durationMins = {2000, 1000, 800, 500, 400, 300, 200};
 
     //how much it speeds up based on round #
@@ -77,7 +77,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         if (level <= durationRanges.length) {
             durationRange = durationRanges[level - 1];
             durationMin = durationMins[level - 1];
-        }else {
+        }else { //level too high, max it out
             durationRange = durationRanges[durationRanges.length-1];
             durationMin = durationMins[durationMins.length-1];
         }
@@ -117,7 +117,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private void startGame(){
         //inits the letters and their positions
         numLets = (scrWidth/((1+LET_SPACING)*LET_SIZE));
-        numPowerUps = (int) (Math.random()*10);
+       // numPowerUps = (int) (Math.random()*10);
         //TODO let's assume numPowerUps < numLets bc i dont feel like adding a check right now
         letters = new Letter[numLets];
         //int pos = 0;
@@ -133,9 +133,10 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
         //choose a letter
         int letterNum;
-
-        if(i < numLets - numPowerUps) letterNum = (int) (26 * Math.random()) + 'A'; //a letter
-        else letterNum = powerUpChoices[(int)(Math.random()*powerUpChoices.length)]; //powerup
+        letters[i].setIsPowerUp(Math.random() > .9); // 1/10 chance of being a powerup
+        //if(i < numLets - numPowerUps) letterNum = (int) (26 * Math.random()) + 'A'; //a letter
+        if(!letters[i].isPowerUp()) letterNum = (int) (26 * Math.random()) + 'A'; //a letter
+        else letterNum = powerUpChoices[(int)(Math.random()*powerUpChoices.length)]; //a powerup
         letters[i].setLet(letterNum);
 
         //add to layout in proper location
@@ -148,7 +149,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         letterView.setTextSize(LET_SIZE);
 
         //animate if it's a normal letter OR a 4/10 chance of getting a power up
-        if(i < numLets - numPowerUps || Math.random()*10 < 4) {
+        if(!letters[i].isPowerUp() || Math.random()*10 < 4) {
             //TODO it's dumb to store isFirstRound and also round number
             if (letters[i].isFirstRound()) {
                 letterView.animate().setStartDelay((long) (delayRange * Math.random()) + delayMin);
@@ -158,9 +159,9 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             }
             //faster based on round #
             int roundDisadvantage = letters[i].getNumRegens()*roundDecrement;
-            long speed = (long) (durationRange * Math.random() + durationMin) - roundDisadvantage;
-            if(speed < durationMin) speed = durationMin; //reverse deadband so it's not ridonkulous
-            letterView.animate().setDuration(speed).y(visHeight);
+            long duration = (long) (durationRange * Math.random() + durationMin) - roundDisadvantage;
+            if(duration < durationMin) duration = durationMin; //reverse deadband so it's not ridonkulous
+            letterView.animate().setDuration(duration).y(visHeight);
             letterView.animate().setListener(new Listener(i)); //listens for the end of the animations
         }
     }
@@ -180,33 +181,37 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         for(int i=0;i<letters.length;i++){
             if(letters[i].getLet() != -1) {
                 if(keyCode == getKeyEvent(letters[i].getLet())) {
-                    if(i < numLets) {
+
+                    //sorry if i screwed up the meaning of these if statements
+                    if(letters[i].isPowerUp()) { //is a powerup
                         //Increment powerUpDurationTimer if necessary (powerup)
-                        if(powerUpDurationTimer != -1) powerUpDurationTimer += 1;
-                        if(powerUpDurationTimer > Math.random()*3+2){
+                        if (powerUpDurationTimer != -1) powerUpDurationTimer += 1;
+                        if (powerUpDurationTimer > Math.random() * 3 + 2) {
                             durationRange /= 2;
                             powerUpDurationTimer = -1;
                         }
-                        //Adjust stuff
-                        gameScore++;
-                        escapedLets--;
-                        TextView scoreText = (TextView) findViewById(R.id.score);
-                        scoreText.setText("Score: " + gameScore + " ");
-
-                        TextView escText = (TextView) findViewById(R.id.letsleft);
-                        escText.setText("Escaped: " + escapedLets + "/" + letters.length + " ");
-                        //Make new letter
-                        letters[i].getTextView().setText("");
-                        letters[i].getTextView().animate().cancel();
-                        letters[i].incNumRegens();//increment how many rounds it's been through
-                        createLetter(i);
-                        return true;
                     }
                     else {
                         durationRange *= 2;
                         powerUpDurationTimer = 0;
                     }
+
+                    //Adjust stuff
+                    gameScore++;
+                    escapedLets--;
+                    TextView scoreText = (TextView) findViewById(R.id.score);
+                    scoreText.setText("Score: " + gameScore + " ");
+
+                    TextView escText = (TextView) findViewById(R.id.letsleft);
+                    escText.setText("Escaped: " + escapedLets + "/" + letters.length + " ");
+                    //Make new letter
+                    letters[i].getTextView().setText("");
+                    letters[i].getTextView().animate().cancel();
+                    letters[i].incNumRegens();//increment how many rounds it's been through
+                    createLetter(i);
+                    return true;
                 }
+
             }
         }
         return false;
