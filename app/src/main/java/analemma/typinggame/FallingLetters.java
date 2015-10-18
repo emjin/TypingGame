@@ -53,7 +53,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private int delayMin = 2000;
     private int delayRange = 4000;
     //select from these based on level
-    private int[] durationRanges = {4000, 3000, 2500, 2250, 1000, 5000, 2500};
+    private int[] durationRanges = {10000, 9000, 7500, 6000, 5000, 3000, 1000};
     private int[] durationMins = {2000, 1000, 800, 500, 400, 300, 200};
 
     //how much it speeds up based on round #
@@ -144,12 +144,13 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
         letterView.setX(letters[i].getPos());
         letterView.setY(-LET_SIZE * FONT_TO_PIXELS);
+       // letterView.setY(0); //TODO ugly but helps me test
         letterView.setTextColor(getResources().getColor(R.color.letter));
         rl.addView(letterView);
         letterView.setTextSize(LET_SIZE);
 
-        //animate if it's a normal letter OR a 4/10 chance of getting a power up
-        if(!letters[i].isPowerUp() || Math.random()*10 < 4) {
+        //animate if it's a normal letter OR a 4/10 chance of getting a power up - out for now
+       if(!letters[i].isPowerUp() || Math.random()*10 < 4) {
             //TODO it's dumb to store isFirstRound and also round number
             if (letters[i].isFirstRound()) {
                 letterView.animate().setStartDelay((long) (delayRange * Math.random()) + delayMin);
@@ -163,7 +164,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             if(duration < durationMin) duration = durationMin; //reverse deadband so it's not ridonkulous
             letterView.animate().setDuration(duration).y(visHeight);
             letterView.animate().setListener(new Listener(i)); //listens for the end of the animations
-        }
+       }
     }
 
     //gets the keyevent associated with given capital letter or powerup
@@ -191,10 +192,10 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
                             powerUpDurationTimer = -1;
                         }
                     }
-                    else {
+                   /* else {
                         durationRange *= 2;
                         powerUpDurationTimer = 0;
-                    }
+                    }*/ //TODO idk what this does and i put it in the wrong place :)
 
                     //Adjust stuff
                     gameScore++;
