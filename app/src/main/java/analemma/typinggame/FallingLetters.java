@@ -143,14 +143,16 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         TextView letterView = letters[i].getTextView();
 
         letterView.setX(letters[i].getPos());
-        letterView.setY(-LET_SIZE * FONT_TO_PIXELS);
-       // letterView.setY(0); //TODO ugly but helps me test
+        //letterView.setY(-LET_SIZE * FONT_TO_PIXELS);
+        letterView.setY(0); //TODO ugly but helps me test
         letterView.setTextColor(getResources().getColor(R.color.letter));
         rl.addView(letterView);
         letterView.setTextSize(LET_SIZE);
 
         //animate if it's a normal letter OR a 4/10 chance of getting a power up - out for now
-       if(!letters[i].isPowerUp() || Math.random()*10 < 4) {
+        //the 4/10 thing i think made a problem bc if it doesn't get animated, we never come back to this
+        //letter and animate it
+      // if(!letters[i].isPowerUp() || Math.random()*10 < 4) {
             //TODO it's dumb to store isFirstRound and also round number
             if (letters[i].isFirstRound()) {
                 letterView.animate().setStartDelay((long) (delayRange * Math.random()) + delayMin);
@@ -164,7 +166,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             if(duration < durationMin) duration = durationMin; //reverse deadband so it's not ridonkulous
             letterView.animate().setDuration(duration).y(visHeight);
             letterView.animate().setListener(new Listener(i)); //listens for the end of the animations
-       }
+      // }
     }
 
     //gets the keyevent associated with given capital letter or powerup
