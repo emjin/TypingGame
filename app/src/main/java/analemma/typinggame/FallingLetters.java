@@ -191,7 +191,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
                     if(letters[i].isPowerUp()) {
                         gameScore += POWERUP_INC;
                         rl.setBackgroundColor(getResources().getColor(R.color.powerup_background));//red background
-                        CountDownTimer t = new CountDownTimer(200, 10){
+                        CountDownTimer t = new CountDownTimer(180, 10){
                             public void onTick(long millis) {
                             }
                             public void onFinish() {
