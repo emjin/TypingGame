@@ -27,6 +27,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private static final int LET_SPACING = 1; //as a fraction of letter size
     private static final float FONT_TO_PIXELS = 3.5f; //font pts:pixels
     private final int THRESHOLD = 3;
+    private final int POWERUP_INC = 10;
 
     private RelativeLayout rl;
     private int visHeight; //height of visible area
@@ -63,9 +64,6 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private int durationRange;
     private int durationMin;
 
-    //??? anna cant comment this bc she dont know
-    private int powerUpDurationTimer = -1;
-
     private static int splatterRange = 100; //in pixels
 
     @Override
@@ -86,6 +84,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
 
 
         gameScore = 0;
+        escapedLets = 0;
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -143,8 +142,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         TextView letterView = letters[i].getTextView();
 
         letterView.setX(letters[i].getPos());
-        //letterView.setY(-LET_SIZE * FONT_TO_PIXELS);
-        letterView.setY(0); //TODO ugly but helps me test
+        letterView.setY(-LET_SIZE * FONT_TO_PIXELS);
+        //letterView.setY(0); //TODO ugly but helps me test
         letterView.setTextColor(getResources().getColor(R.color.letter));
         rl.addView(letterView);
         letterView.setTextSize(LET_SIZE);
@@ -184,20 +183,10 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         for(int i=0;i<letters.length;i++){
             if(letters[i].getLet() != -1) {
                 if(keyCode == getKeyEvent(letters[i].getLet())) {
-
-                    //sorry if i screwed up the meaning of these if statements
-                    if(letters[i].isPowerUp()) { //is a powerup
-                        //Increment powerUpDurationTimer if necessary (powerup)
-                        if (powerUpDurationTimer != -1) powerUpDurationTimer += 1;
-                        if (powerUpDurationTimer > Math.random() * 3 + 2) {
-                            durationRange /= 2;
-                            powerUpDurationTimer = -1;
-                        }
+                    //If powerup
+                    if(letters[i].isPowerUp()) {
+                        gameScore += POWERUP_INC;
                     }
-                   /* else {
-                        durationRange *= 2;
-                        powerUpDurationTimer = 0;
-                    }*/ //TODO idk what this does and i put it in the wrong place :)
 
                     //Adjust stuff
                     gameScore++;
@@ -214,7 +203,6 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
                     createLetter(i);
                     return true;
                 }
-
             }
         }
         return false;
