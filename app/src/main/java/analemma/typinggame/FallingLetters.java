@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Display;
@@ -18,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.util.Timer;
 
 public class FallingLetters extends ActionBarActivity implements KeyEvent.Callback {
     public static final String SEND_LEVEL_MESSAGE = "com.analemma.typinggame.send_level";
@@ -39,7 +42,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private int numLets;
    // private int numPowerUps;
 
-    int[] powerUpChoices = {'#', '+', '='};
+    int[] powerUpChoices = {'=', '-', '='};
     private Letter[] letters;
     private int[] keyEvents = {KeyEvent.KEYCODE_A, KeyEvent.KEYCODE_B, KeyEvent.KEYCODE_C, KeyEvent.KEYCODE_D,
             KeyEvent.KEYCODE_E, KeyEvent.KEYCODE_F, KeyEvent.KEYCODE_G, KeyEvent.KEYCODE_H, KeyEvent.KEYCODE_I,
@@ -52,13 +55,13 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     //GIANT BLOCK OF TIMING VARS: these are all in milliseconds
     //base vars; things that don't change
     private int delayMin = 2000;
-    private int delayRange = 4000;
+    private int delayRange = 20000;
     //select from these based on level
-    private int[] durationRanges = {10000, 9000, 7500, 6000, 5000, 3000, 1000};
-    private int[] durationMins = {2000, 1000, 800, 500, 400, 300, 200};
+    private int[] durationRanges = {20000, 9000, 7500, 6000, 5000, 3000, 1000};
+    private int[] durationMins = {3000, 2500, 2000, 1500, 1000, 500, 200};
 
     //how much it speeds up based on round #
-    private int roundDecrement = 400;
+    private int roundDecrement = 4000;
 
     //specific to this run
     private int durationRange;
@@ -182,10 +185,19 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     public boolean onKeyDown(int keyCode, KeyEvent event){
         for(int i=0;i<letters.length;i++){
             if(letters[i].getLet() != -1) {
+                ((TextView)findViewById(R.id.letsleft)).setText(keyCode + " " + getKeyEvent(letters[i].getLet()) + " " + letters[i].isPowerUp());
                 if(keyCode == getKeyEvent(letters[i].getLet())) {
                     //If powerup
                     if(letters[i].isPowerUp()) {
                         gameScore += POWERUP_INC;
+                        rl.setBackgroundColor(getResources().getColor(R.color.powerup_background));//red background
+                        CountDownTimer t = new CountDownTimer(200, 10){
+                            public void onTick(long millis) {
+                            }
+                            public void onFinish() {
+                                rl.setBackgroundColor(getResources().getColor(R.color.background));
+                            }
+                        }.start();
                     }
 
                     //Adjust stuff
@@ -194,8 +206,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
                     TextView scoreText = (TextView) findViewById(R.id.score);
                     scoreText.setText("Score: " + gameScore + " ");
 
-                    TextView escText = (TextView) findViewById(R.id.letsleft);
-                    escText.setText("Escaped: " + escapedLets + "/" + letters.length + " ");
+                    //TextView escText = (TextView) findViewById(R.id.letsleft);
+                    //escText.setText("Escaped: " + escapedLets + "/" + letters.length + " ");
                     //Make new letter
                     letters[i].getTextView().setText("");
                     letters[i].getTextView().animate().cancel();
@@ -270,8 +282,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             letters[let].setLet(-1); //letter no longer on screen, can't type it
             rl.removeView(letters[let].getTextView());
             escapedLets++;
-            TextView escText = (TextView) findViewById(R.id.letsleft);
-            escText.setText("Escaped: " + escapedLets + "/" + letters.length + " ");
+            //TextView escText = (TextView) findViewById(R.id.letsleft);
+            //escText.setText("Escaped: " + escapedLets + "/" + letters.length + " ");
             if(letters.length-escapedLets <= THRESHOLD) showScore();
             //TODO ^^ i think this may be causing problems, since something happened with letters.length & the powerups
         }

@@ -35,7 +35,7 @@ public class Letter {
     public int getPos(){return pos;}
     public void setPos(int p){pos = p;}
 
-    public int getNumRegens(){return numRegens;}
+    public int getNumRegens(){return numRegens;} //regenerations
     public void setNumRegens(int n){numRegens = n;}
     public void incNumRegens(){numRegens++;} //increment the number of regenerations
 
