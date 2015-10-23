@@ -42,7 +42,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private int numLets;
    // private int numPowerUps;
 
-    int[] powerUpChoices = {'=', '-', '='};
+    int[] powerUpChoices = {'=', '%', '='};
     private Letter[] letters;
     private int[] keyEvents = {KeyEvent.KEYCODE_A, KeyEvent.KEYCODE_B, KeyEvent.KEYCODE_C, KeyEvent.KEYCODE_D,
             KeyEvent.KEYCODE_E, KeyEvent.KEYCODE_F, KeyEvent.KEYCODE_G, KeyEvent.KEYCODE_H, KeyEvent.KEYCODE_I,
