@@ -188,7 +188,6 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     public boolean onKeyDown(int keyCode, KeyEvent event){
         for(int i=0;i<letters.length;i++){
             if(letters[i].getLet() != -1) {
-                ((TextView)findViewById(R.id.letsleft)).setText(keyCode + " " + getKeyEvent(letters[i].getLet()) + " " + letters[i].isPowerUp());
                 if(keyCode == getKeyEvent(letters[i].getLet())) {
                     //If powerup
                     if(letters[i].isPowerUp()) {
@@ -209,7 +208,6 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
                     TextView scoreText = (TextView) findViewById(R.id.score);
                     scoreText.setText("Score: " + gameScore + " ");
 
-                    //TextView escText = (TextView) findViewById(R.id.letsleft);
                     //escText.setText("Escaped: " + escapedLets + "/" + letters.length + " ");
                     //Make new letter
                     letters[i].getTextView().setText("");
@@ -293,7 +291,6 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
             letters[let].setLet(-1); //letter no longer on screen, can't type it
             rl.removeView(letters[let].getTextView());
             escapedLets++;
-            //TextView escText = (TextView) findViewById(R.id.letsleft);
             //escText.setText("Escaped: " + escapedLets + "/" + letters.length + " ");
             if(letters.length-escapedLets <= THRESHOLD) showScore();
             //TODO ^^ i think this may be causing problems, since something happened with letters.length & the powerups
