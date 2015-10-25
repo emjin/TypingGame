@@ -45,7 +45,7 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     private int numLets;
    // private int numPowerUps;
 
-    int[] powerUpChoices = {'=', '%', '='};
+    int[] powerUpChoices = {'=', '.', ','};
     private Letter[] letters;
     private int[] keyEvents = {KeyEvent.KEYCODE_A, KeyEvent.KEYCODE_B, KeyEvent.KEYCODE_C, KeyEvent.KEYCODE_D,
             KeyEvent.KEYCODE_E, KeyEvent.KEYCODE_F, KeyEvent.KEYCODE_G, KeyEvent.KEYCODE_H, KeyEvent.KEYCODE_I,
@@ -177,8 +177,8 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
     //gets the keyevent associated with given capital letter or powerup
     private int getKeyEvent(int letter){
         if(letter >= 'A' && letter <= 'Z') return keyEvents[letter - 'A'];
-        if(letter == '#') return KeyEvent.KEYCODE_POUND;
-        if(letter == '+') return KeyEvent.KEYCODE_PLUS;
+        if(letter == '.') return KeyEvent.KEYCODE_PERIOD;
+        if(letter == ',') return KeyEvent.KEYCODE_COMMA;
         if(letter == '=') return KeyEvent.KEYCODE_EQUALS;
         return -50;//poopbag return statement
     }
