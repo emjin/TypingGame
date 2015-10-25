@@ -2,6 +2,7 @@
 package analemma.typinggame;
 
 import android.animation.Animator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -26,6 +27,7 @@ import java.util.Timer;
 public class FallingLetters extends ActionBarActivity implements KeyEvent.Callback {
     public static final String SEND_LEVEL_MESSAGE = "com.analemma.typinggame.send_level";
     public static final String SCORE_MESSAGE = "com.analemma.typinggame.game_score";
+    public static final int NEW_LEVEL = 1;
 
     private static final int LET_SIZE = 40;
     private static final int LET_SPACING = 1; //as a fraction of letter size
@@ -225,7 +227,15 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         Intent intent = new Intent(this, ScorePage.class);
         intent.putExtra(SEND_LEVEL_MESSAGE, level);
         intent.putExtra(SCORE_MESSAGE, gameScore);
-        startActivity(intent);
+        startActivityForResult(intent, NEW_LEVEL);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == FallingLetters.NEW_LEVEL && resultCode == Activity.RESULT_OK){
+            int newLevel = data.getIntExtra(MainActivity.LEVEL_MESSAGE, 1); //1 is default
+            setResult(Activity.RESULT_OK, new Intent().putExtra(SEND_LEVEL_MESSAGE, newLevel));
+            finish();
+        }
     }
 
     @Override

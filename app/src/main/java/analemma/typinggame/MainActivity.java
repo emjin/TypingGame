@@ -1,5 +1,6 @@
 package analemma.typinggame;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.provider.Settings;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 
 public class MainActivity extends ActionBarActivity {
     public static final String LEVEL_MESSAGE = "com.analemma.typinggame.level";
+    public static final int NEW_LEVEL = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +40,17 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent(this, FallingLetters.class);
         intent.putExtra(LEVEL_MESSAGE, start_level);
         //Finish the intent
-        startActivity(intent);
+        startActivityForResult(intent, NEW_LEVEL);
+    }
+
+    //Get the new level and start another activity
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MainActivity.NEW_LEVEL && resultCode == Activity.RESULT_OK) {
+            int newLevel = data.getIntExtra(FallingLetters.SEND_LEVEL_MESSAGE, 1); //1 is default
+            Intent intent = new Intent(this, FallingLetters.class);
+            intent.putExtra(LEVEL_MESSAGE, newLevel);
+            startActivityForResult(intent, NEW_LEVEL);
+        }
     }
 
     private void openSearch() {

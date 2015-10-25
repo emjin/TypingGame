@@ -1,6 +1,7 @@
 
 package analemma.typinggame;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -25,26 +26,26 @@ public class ScorePage extends ActionBarActivity {
         level = intent.getIntExtra(FallingLetters.SEND_LEVEL_MESSAGE, 1);
         score = intent.getIntExtra(FallingLetters.SCORE_MESSAGE, 0);
 
-        restart = new Intent(this, FallingLetters.class);
+        restart = new Intent();
         TextView scoreView = (TextView)findViewById(R.id.scoreBox);
         TextView levelView = (TextView)findViewById(R.id.levelMessage);
         Button contButton = (Button)findViewById(R.id.contButton);
         scoreView.setText("Score:" + score);
         if(score > threshold){
-            levelView.setText("You've passed level "+level+"!");
+            levelView.setText("You've passed level " + level + "!");
             levelView.setTextColor(getResources().getColor(R.color.yay));
             contButton.setText(getResources().getString(R.string.next_button));
-            restart.putExtra(MainActivity.LEVEL_MESSAGE, level + 1);
+            setResult(Activity.RESULT_OK, restart.putExtra(MainActivity.LEVEL_MESSAGE, level + 1));
         }else{
             levelView.setText("You need " + (threshold - score) + " more points to move on to the next level. Better luck next time!");
             levelView.setTextSize(40);
             contButton.setText(getResources().getString(R.string.back_button));
-            restart.putExtra(MainActivity.LEVEL_MESSAGE, level);
+            setResult(Activity.RESULT_OK, restart.putExtra(MainActivity.LEVEL_MESSAGE, level));
         }
     }
 
     public void begin(View view){
-        startActivity(restart);
+        finish();
     }
 
     @Override
