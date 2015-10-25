@@ -5,5 +5,6 @@
     <color name="captionText">#777799</color>
     <color name="letter">#ffffff</color>
     <color name="main">#99eeff</color>
-    <color name="yay">#11ffaa</color>
+    <color name="yay">#317873</color>
+    <color name="powerup_background">#dd3311</color>
 </resources>

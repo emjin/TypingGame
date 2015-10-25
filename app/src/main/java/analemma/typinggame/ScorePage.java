@@ -1,3 +1,4 @@
+
 package analemma.typinggame;
 
 import android.content.Intent;
@@ -13,7 +14,7 @@ import android.widget.TextView;
 public class ScorePage extends ActionBarActivity {
     int level;
     int score;
-    int threshold = 10;
+    int threshold = 20;
     Intent restart;
 
     @Override
@@ -23,7 +24,6 @@ public class ScorePage extends ActionBarActivity {
         Intent intent = getIntent();
         level = intent.getIntExtra(FallingLetters.SEND_LEVEL_MESSAGE, 1);
         score = intent.getIntExtra(FallingLetters.SCORE_MESSAGE, 0);
-        threshold = threshold/level;
 
         restart = new Intent(this, FallingLetters.class);
         TextView scoreView = (TextView)findViewById(R.id.scoreBox);
@@ -36,7 +36,7 @@ public class ScorePage extends ActionBarActivity {
             contButton.setText(getResources().getString(R.string.next_button));
             restart.putExtra(MainActivity.LEVEL_MESSAGE, level + 1);
         }else{
-            levelView.setText("You need " + (threshold - score) + "more points to move on to the next level. Better luck next time!");
+            levelView.setText("You need " + (threshold - score) + " more points to move on to the next level. Better luck next time!");
             levelView.setTextSize(40);
             contButton.setText(getResources().getString(R.string.back_button));
             restart.putExtra(MainActivity.LEVEL_MESSAGE, level);
@@ -69,3 +69,4 @@ public class ScorePage extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
