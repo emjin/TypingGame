@@ -16,17 +16,27 @@
     <TextView android:text="@string/title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize = "40dp"
+        android:textSize = "50dp"
         android:id="@+id/welcome_view"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/start_button"
-        android:onClick="begin"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/myButton" />
-
+    <LinearLayout
+        android:orientation = "horizontal"
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start_button"
+            android:onClick="begin"
+            android:id="@+id/myButton" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HOW TO"
+            android:onClick="toInstructions"
+            android:id="@+id/instructionsButton"/>
+    </LinearLayout>
 
 
 </RelativeLayout>

@@ -43,6 +43,10 @@ public class MainActivity extends ActionBarActivity {
         startActivityForResult(intent, NEW_LEVEL);
     }
 
+    public void toInstructions(View view){
+        startActivity(new Intent(this, InstructionsPage.class));
+    }
+
     //Get the new level and start another activity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == MainActivity.NEW_LEVEL && resultCode == Activity.RESULT_OK) {
