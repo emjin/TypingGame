@@ -19,15 +19,8 @@
     <TextView android:text="@string/instructions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize = "25dp"
+        android:textSize = "23dp"
         android:textColor = "#222222"
         android:id="@+id/instructions"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back"
-        android:onClick="goBack"
-        android:id="@+id/backButton"/>
 
 </LinearLayout>
