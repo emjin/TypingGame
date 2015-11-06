@@ -221,6 +221,12 @@ public class FallingLetters extends ActionBarActivity implements KeyEvent.Callba
         return false;
     }
 
+    //interfaces are assholes
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event){
+        return true;
+    }
+
     public void showScore(){
         Intent intent = new Intent(this, ScorePage.class);
         intent.putExtra(SEND_LEVEL_MESSAGE, level);
